@@ -1,0 +1,698 @@
+#!/usr/bin/with-contenv bash
+
+ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"127.0.0.0/8 [::1]/128 172.16.0.0/12"}
+APPEND_DOT_MYDOMAIN=${APPEND_DOT_MYDOMAIN:-"FALSE"}
+BACKOFF_TIME_MAX=${BACKOFF_TIME_MAX:-1800}
+BACKOFF_TIME_MIN=${BACKOFF_TIME_MIN:-450}
+BIFF=${BIFF:-"FALSE"}
+BOUNCE_QUEUE_LIFETIME=${BOUNCE_QUEUE_LIFETIME:-14}
+COMPATIBILITY_LEVEL=${COMPATIBILITY_LEVEL:-2}
+DATA_LOCATION=${DATA_LOCATION:-"/data/"}
+DISABLE_VRFY_COMMAND=${DISABLE_VRFY_COMMAND:-"TRUE"}
+ENABLE_LDAP=${ENABLE_LDAP=-"TRUE"}
+ENABLE_RELAY_HOST=${ENABLE_RELAY_HOST:-"TRUE"}
+LDAP_ATTRIBUTE_ALIAS=${LDAP_ATTRIBUTE_ALIAS:-"mail"}
+LDAP_ATTRIBUTE_USERS=${LDAP_ATTRIBUTE_USERS:-"mail"}
+LDAP_FILTER_ALIAS=${LDAP_FILTER_ALIAS:-"(kopanoAliases=%s)"}
+LDAP_FILTER_USERS=${LDAP_FILTER_USERS:-"(mail=%s)"}
+LDAP_FILTER_SASL=${LDAP_FILTER_SASL:-"(&(mail=%u))"}
+LDAP_SEARCH_DN=${LDAP_SEARCH_DN:-"dc=example,dc=com"}
+LDAP_SCOPE_ALIAS=${LDAP_SCOPE_ALIAS:-"sub"}
+LDAP_SCOPE_USERS=${LDAP_SCOPE_USERS:-"sub"}
+LDAP_SCOPE_SASL=${LDAP_SCOPE_SASL:-"sub"}
+LDAP_VERSION=${LDAP_VERSION:-3}
+LDAP_PORT=${LDAP_PORT:-389}
+LDAP_TIMEOUT=${LDAP_TIMEOUT:-10}
+LIFETIME_QUEUE_BOUNCE=${LIFETIME_QUEUE_BOUNCE:-5}
+LIFETIME_QUEUE_MAX=${LIFETIME_QUEUE_MAX:-14}
+LIMIT_MESSAGE_RECIPIENTS=${LIMIT_MESSAGE_RECIPIENTS:-1000000}
+LIMIT_MESSAGE_SIZE=${LIMIT_MESSAGE_SIZE:-21360000}
+LMTP_HOST=${LMTP_HOST:-"localhost"}
+LMTP_PORT=${LMTP_PORT:-"2003"}
+LOG_LEVEL_TLS_CLIENT=${LOG_LEVEL_TLS_CLIENT:-"1"}
+LOG_LEVEL_TLS_SERVER=${LOG_LEVEL_TLS_SERVER:-0}
+OWNER_REQUEST_SPECIAL=${OWNER_REQUEST_SPECIAL:-"FALSE"}
+QUEUE_DELAY=${QUEUE_DELAY:-900}
+RELAY_ENABLE_TLS=${RELAY_ENABLE_TLS:-"TRUE"}
+RELAY_SECURITY_OPTIONS=${RELAY_SECURITY_OPTIONS:-"noanonymous"}
+RSPAM_HOST=${RSPAM_HOST:-"localhost"}
+RSPAM_PORT=${RSPAM_PORT:-"11332"}
+SASL_AUTH_ENABLE=${SASL_AUTH_ENABLE:-"TRUE"}
+SASL_BROKEN_AUTH_CLIENTS=${SASL_BROKEN_AUTH_CLIENTS:-"TRUE"}
+SERVER_NAME=${SERVER_NAME:-"example.com"}
+SETUP_TYPE=${SETUP_TYPE:-"AUTO"}
+SMTPD_BANNER=${SMTPD_BANNER:-"\$myhostname ESMTP NO UCE"}
+TLS_CLIENT_MANDATORY_CIPHERS=${TLS_CLIENT_MANDATORY_CIPHERS:-"high"}
+TLS_CLIENT_MANDATORY_PROTOCOLS=${TLS_CLIENT_MANDATORY_PROTOCOLS:-"!SSLv2, !SSLv3"}
+TLS_CLIENT_SECURITY_LEVEL=${TLS_CLIENT_SECURITY_LEVEL:-"may"}
+TLS_SERVER_AUTH_ONLY=${TLS_AUTH_ONLY:-"FALSE"}
+TLS_SERVER_CERT_FILE=${TLS_SERVER_CERT_FILE:-"/certs/postfix.crt"}
+TLS_SERVER_DH_PARAM_FILE=${TLS_SERVER_DH_PARAM_FILE:-"/certs/dhparam.pem"}
+TLS_SERVER_DH_PARAM_KEYSIZE=${TLS_SERVER_DH_PARAM_KEYSIZE:-"1024"}
+TLS_SERVER_KEY_FILE=${TLS_SERVER_KEY_FILE:-"/certs/postfix.key"}
+TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS=${TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS:-"aNULL, eNULL, EXPORT, DES, RC4, MD5, PSK, aECDH, EDH-DSS-DES-CBC3-SHA, EDH-RSA-DES-CDC3-SHA, KRB5-DE5, CBC3-SHA"}
+TLS_SERVER_MANDATORY_PROTOCOLS=${TLS_SERVER_MANDATORY_PROTOCOLS:-"!SSLv2, !SSLv3"}
+TLS_SERVER_PROTOCOLS=${TLS_SERVER_PROTOCOLS:-"!SSLv2 !SSLv3"}
+TLS_SERVER_RECEIVED_HEADER=${TLS_SERVER_RECEIVED_HEADER:-"TRUE"}
+TLS_SERVER_SECURITY_LEVEL=${TLS_SERVER_SECURITY_LEVEL:-"may"}
+TLS_SERVER_SESSION_CACHE_TIMEOUT=${TLS_SERVER_SESSION_CACHE_TIMEOUT:-"3600s"}
+VIRTUAL_MAILBOX_DOMAINS=${VIRTUAL_MAILBOX_DOMAINS:-"mail.example.com mail2.example.com"}
+SASL_AUTH_TYPE=${SASL_AUTH_TYPE:-"LDAP"}
+SASL_AUTH_IMAP_HOST=${SASL_AUTH_IMAP_HOST:-"imap"}
+
+case "${SASL_AUTH_TYPE}" in
+	"LDAP" | "ldap" )
+        sasl_auth_type="ldap"
+        sasl_mech_options="/etc/postfix/saslauthd.cf"
+    ;;
+	"IMAP" | "imap" )
+		sasl_auth_type="rimap"
+		sasl_mech_options="${SASL_AUTH_IMAP_HOST}"
+	;;
+esac
+
+truefalse_yesno() {
+	value=`set | grep ${1}= | cut -d '=' -f2`
+	var=`set | grep ${1}= | sed "s/=.*//g"`
+
+    if [ "$value" = "TRUE" ] || [ "$value" = "true" ]; then
+            print_debug "Converting Variable Name ${var} value to 'yes'"
+            export $1="yes"
+    else
+            print_debug "Converting Variable Name ${var} value to 'no'"
+            export $1="no"
+    fi
+}
+
+certificates() {
+	CA_NAME=postfix-selfsigned-ca
+	CA_SUBJECT=${CA_SUBJECT:-"/C=XX/ST=Postfix/L=Postfix/O=Postfix/CN="}
+	CA_CERT_SUBJECT=${CA_CERT_SUBJECT:-${CA_SUBJECT}${CA_NAME}}
+	CA_CERT_FILE=${CA_CERT_FILE:-"/certs/${CA_NAME}/${CA_NAME}.crt"}
+	CA_KEY_FILE=${CA_KEY_FILE:-"`dirname ${CA_CERT_FILE}`/${CA_NAME}.key"}
+	CREATE_CA=${CREATE_CA:-"TRUE"}
+
+	certificates_create_certificate_authority() {
+		if [ ! -f ${CA_CERT_FILE} ] ; then
+
+			print_debug "Certificates: Creating Self Signed Certificate Authority"
+			mkdir -p `dirname ${CA_CERT_FILE}`
+			echo "000a" > `dirname ${CA_CERT_FILE}`/serial
+			touch `dirname ${CA_CERT_FILE}`/certindex
+
+			silent eval "openssl req \
+			      -newkey rsa:4096 -keyout ${CA_KEY_FILE} \
+			      -x509 -days 3650 -nodes -out ${CA_CERT_FILE} \
+			      -subj \"${CA_CERT_SUBJECT}\""
+
+			cat > `dirname ${CA_CERT_FILE}`/$CA_NAME.conf << EOF
+			[ ca ]
+			default_ca = $CA_NAME
+
+			[ $CA_NAME ]
+			unique_subject = no
+			new_certs_dir = .
+			certificate = ${CA_CERT_FILE}
+			database = `dirname ${CA_CERT_FILE}`/certindex
+			private_key = ${CA_KEY_FILE}
+			serial = `dirname ${CA_CERT_FILE}`/serial
+			default_days = 3650
+			default_md = default
+			policy = ${CA_NAME}_policy
+			x509_extensions = ${CA_NAME}_extensions
+
+			[ ${CA_NAME}_policy ]
+			commonName = supplied
+			stateOrProvinceName = supplied
+			countryName = supplied
+			emailAddress = optional
+			organizationName = supplied
+			organizationalUnitName = optional
+
+			[ ${CA_NAME}_extensions ]
+			basicConstraints = CA:false
+			subjectKeyIdentifier = hash
+			authorityKeyIdentifier = keyid:always
+			keyUsage = digitalSignature,keyEncipherment
+			extendedKeyUsage = serverAuth,clientAuth
+
+			[ req ]
+			default_bits		= 2048
+
+			[default_conf]
+			ssl_conf = ssl_sect
+
+			[ssl_sect]
+			system_default = system_default_sect
+
+			[system_default_sect]
+			MinProtocol = TLSv1.1
+			MaxProtocol = TLSv1.2
+			CipherString = DEFAULT
+EOF
+	    else
+	        print_debug "Certificates: CA Already Exists"
+		fi
+	}
+
+	certificates_create_certificate() {
+	    if [ "$1" != "" ] ; then
+
+	    	if var_true $CREATE_CA ; then
+		        if [ ! -f ${CA_CERT_FILE} ] || [ ! -f ${CA_KEY_FILE} ] ; then
+					print_debug "Certificates: No CA Found - Creating before generating certificates"
+					certificates_create_certificate_authority
+				fi
+			fi            
+            CERT_SUBJECT="${CA_SUBJECT}$(basename ${1%%.*})"
+
+	    	if var_true $CREATE_CA ; then
+				if [ ! -f ${1%%.*}.key ] ; then
+					print_debug "Certificates: Creating Certificate: ${1}"
+					silent eval "openssl req \
+			      		  -newkey rsa:2048 -keyout ${1%%.*}.key \
+					      -nodes -out ${1%%.*}.csr \
+					      -subj \"${CERT_SUBJECT}\""
+				fi
+			else
+				if [ ! -f ${1%%.*}.key ] ; then
+					print_debug "Certificates: Creating Certificate: ${1}"
+					silent eval "openssl req \
+						  -new -x509 -nodes -days 3650 
+						  -config /tmp/openssl.cnf 
+						  -out ${1%%.*}.crt \
+						  -keyout ${1%%.*}.key"
+				fi
+			fi
+
+	    	if var_true $CREATE_CA ; then
+				if [ ! -f ${1%%.*}.cert ] ; then
+					print_debug "Certificates: Signing Certificate: ${1}"
+					silent eval "openssl ca -batch -config `dirname ${CA_CERT_FILE}`/${CA_NAME}.conf -notext -in ${1%%.*}.csr -out ${1%%.*}.crt"
+					rm -rf $(tail -n 1 $(dirname ${CA_CERT_FILE})/certindex | awk '{print $3}').pem
+					rm -rf ${1%%.*}.csr
+				fi
+			fi
+
+			if [ -f ${1%%.*}.crt ] && [ -f ${1%%.*}.key ] ; then
+				print_debug "Certificates: Merging Certificate and Key for: ${1}"
+	   			cat ${1%%.*}.crt ${1%%.*}.key > ${1%%.*}.pem
+			fi
+
+			if [ ! -f ${1%%.*}-public.pem ] ; then
+				print_debug "Certificates: Creating Public Key for: ${1}"
+				silent openssl rsa -in ${1%%.*}.pem -out ${1%%.*}-public.pem -outform PEM -pubout
+			fi
+		fi
+	}
+
+    certificates_check_permissions() {
+		if sudo -u postfix [ ! -r "${1}" ] ; then
+    		print_debug "Certificates: Setting Read Permissions on ${1}"
+    		chmod 444 ${1}
+    	fi
+    }
+
+	certificates_check_certificates() {
+		print_debug "Certificates: Checking Existence of ${1}"
+		if [ ! -f ${1} ] ; then
+			    mkdir -p `dirname ${1}`
+			    certificates_create_certificate ${1}
+		fi
+	}
+
+	certificates_check_dhparam() {
+		print_debug "Certificates: DH Param - Checking Existence of ${TLS_SERVER_DH_PARAM_FILE}"
+		if [ ! -f TLS_SERVER_DH_PARAM_FILE ] ; then
+			    certificates_create_dhparam
+		fi
+	}
+
+    certificates_create_dhparam() {
+		print_notice "Certificates: DH Param - Creating ${TLS_SERVER_DH_PARAM_FILE}"
+		mkdir -p `dirname ${TLS_SERVER_DH_PARAM_FILE}`
+		silent openssl dhparam -out ${TLS_SERVER_DH_PARAM_FILE} ${TLS_SERVER_DH_PARAM_KEYSIZE}
+    }
+
+	certificates_trust_ca() {
+		if var_true $CREATE_CA ; then
+			if [ -f ${CA_CERT_FILE} ]; then
+				if [ ! -L /usr/local/share/ca-certificates/`basename ${CA_CERT_FILE}` ] ; then
+					print_debug "Certificates: Trusting CA ${CA_NAME}"
+					ln -sf ${CA_CERT_FILE} /usr/local/share/ca-certificates/
+					silent update-ca-certificates
+				fi
+			fi
+		fi
+	}
+
+	case "$1" in
+	" DHPARAM" | "dhparam" )
+        certificates_check_dhparam
+    ;;
+	*)
+		certificates_check_certificates ${1}
+		certificates_check_permissions ${1}
+		certificates_trust_ca
+	;;
+	esac
+}
+
+configure_data_dir() {
+	### Set Permissions
+	print_debug "Configuring Postfix Data Location"
+	mkdir -p ${DATA_LOCATION}		
+	chmod 700 ${DATA_LOCATION}
+	chown postfix:postfix ${DATA_LOCATION}
+	mkdir -p ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
+	#mkdir -p ${DATA_LOCATION}var/run/saslauthd
+	#chown -R postfix ${DATA_LOCATION}/var/run/saslauthd
+    #mkfifo ${DATA_LOCATION}public/pickup
+    #ln -s /etc/postfix/aliases /etc/aliases
+	chown -R postfix:root ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+	chown -R postfix:postdrop ${DATA_LOCATION}{maildrop,public}
+	chown -R root:postfix ${DATA_LOCATION}pid
+}
+
+configure_ldap() {
+	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	    print_notice "Configuring LDAP Connectivity"
+		sanity_var LDAP_HOST "LDAP Host"
+		sanity_var LDAP_BASE_DN "LDAP Base DN"
+
+		if [ -v LDAP_BIND_DN ] || [ -v LDAP_BIND_PASS ]; then
+			ldap_bind=$(cat <<EOF
+bind            = yes
+bind_dn         = ${LDAP_BIND_DN}
+bind_pw         = ${LDAP_BIND_PASS}
+EOF
+						)
+	else
+		ldap_bind=$(cat <<EOF
+bind            = no
+EOF
+						)
+		fi
+
+		### Setup LDAP Users
+		cat <<EOF > /etc/postfix/ldap-users.cf
+## Custom Generated LDAP USers Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+
+server_host=${LDAP_HOST}
+server_port=${LDAP_PORT}
+search_base=${LDAP_BASE_DN}
+timeout=${LDAP_TIMEOUT}
+version=${LDAP_VERSION}
+${ldap_bind}
+scope=${LDAP_SCOPE_USERS}
+query_filter=${LDAP_FILTER_USERS}
+result_attribute=${LDAP_ATTRIBUTE_USERS}
+EOF
+
+		### Setup LDAP Aliases
+		cat <<EOF > /etc/postfix/ldap-aliases.cf
+## Custom Generated LDAP Aliases Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+
+server_host=${LDAP_HOST}
+server_port=${LDAP_PORT}
+search_base=${LDAP_BASE_DN}
+timeout=${LDAP_TIMEOUT}
+version=${LDAP_VERSION}
+${ldap_bind}
+scope=${LDAP_SCOPE_ALIAS}
+query_filter=${LDAP_FILTER_ALIAS}
+result_attribute=${LDAP_ATTRIBUTE_ALIAS}
+EOF
+	fi
+}
+
+configure_postfix_main() {
+	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	    print_notice "Configuring Postfix Main"
+		
+	    if var_true ${ENABLE_RELAY_HOST}; then
+            sanity_var RELAY_HOST
+			if [ -z ${RELAY_USER} ] || [ -z ${RELAY_PASS} ] ; then
+				RELAY_ENABLE_AUTH="no"
+			else
+				RELAY_ENABLE_AUTH="yes"
+			fi
+            
+            truefalse_yesno RELAY_ENABLE_TLS
+
+			smtp_relay=$(cat <<EOF
+# SMTP Relay Host
+relayhost = ${RELAY_HOST}:${RELAY_PORT}
+smtp_sasl_auth_enable = ${RELAY_ENABLE_AUTH}
+smtp_sasl_security_options = ${RELAY_SECURITY_OPTIONS}
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_use_tls = ${RELAY_ENABLE_TLS}
+EOF
+						)
+		fi
+
+		truefalse_yesno APPEND_DOT_MYDOMAIN
+		truefalse_yesno BIFF
+		truefalse_yesno SASL_BROKEN_AUTH_CLIENTS
+		truefalse_yesno DISABLE_VRFY_COMMAND
+		truefalse_yesno OWNER_REQUEST_SPECIAL
+		truefalse_yesno SASL_AUTH_ENABLE
+		truefalse_yesno TLS_SERVER_AUTH_ONLY
+		truefalse_yesno TLS_SERVER_RECEIVED_HEADER
+		cat <<EOF > /etc/postfix/main.cf
+## Custom Generated Postfix Main Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+
+compatibility_level     = ${COMPATIBILITY_LEVEL}
+mail_owner              = postfix
+queue_directory         = ${DATA_LOCATION}
+smtpd_banner            = ${SMTPD_BANNER}
+sendmail_path           = /usr/sbin/sendmail
+newaliases_path         = /usr/bin/newaliases
+mailq_path              = /usr/bin/mailq
+myhostname              = ${SERVER_NAME}
+biff                    = ${BIFF}
+append_dot_mydomain     = ${APPEND_DOT_MYDOMAIN}
+mynetworks= ${ACCEPTED_NETWORKS}
+recipient_delimiter     = +
+owner_request_special   = ${OWNER_REQUEST_SPECIAL}
+inet_interfaces         = all
+inet_protocols          = ipv4
+alias_maps              = hash:/etc/postfix/aliases
+myorigin                = \$myhostname
+mydestination           = localhost
+
+${smtp_relay}
+
+# virtual maps
+virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
+virtual_mailbox_maps    = ldap:/etc/postfix/ldap-users.cf
+###########virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf
+virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
+ 
+# prevent leaking valid e-mail addresses
+disable_vrfy_command    = ${DISABLE_VRFY_COMMAND}
+
+# restrictions
+smtpd_restriction_classes = mua_sender_restrictions, mua_client_restrictions, mua_helo_restrictions
+mua_client_restrictions = permit_sasl_authenticated, reject
+mua_sender_restrictions = permit_sasl_authenticated, reject
+mua_helo_restrictions = permit_mynetworks, reject_non_fqdn_hostname, reject_invalid_hostname, permit
+
+#sasl
+smtpd_sasl_path                 = smtpd
+smtpd_sasl_auth_enable          = ${SASL_AUTH_ENABLE}
+broken_sasl_auth_clients        = ${SASL_BROKEN_AUTH_CLIENTS}
+ 
+# TLS encryption - server
+smtpd_tls_security_level        = ${TLS_SERVER_SECURITY_LEVEL}
+smtpd_tls_auth_only             = ${TLS_SERVER_AUTH_ONLY}
+smtpd_tls_cert_file=${TLS_SERVER_CERT_FILE}
+smtpd_tls_key_file=${TLS_SERVER_KEY_FILE}
+smtpd_tls_loglevel              = ${LOG_LEVEL_TLS_SERVER}
+smtpd_tls_received_header       = ${TLS_SERVER_RECEIVED_HEADER}
+smtpd_tls_session_cache_timeout = ${TLS_SERVER_SESSION_CACHE_TIMEOUT}
+tls_random_source               = dev:/dev/urandom
+smtpd_tls_dh1024_param_file     = ${TLS_SERVER_DH_PARAM_FILE}
+smtpd_tls_session_cache_database        = btree:${DATA_LOCATION}smtpd_scache
+smtpd_tls_mandatory_exclude_ciphers     = ${TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS}
+smtpd_tls_mandatory_protocols           = ${TLS_SERVER_MANDATORY_PROTOCOLS}
+smtpd_tls_protocols                     = ${TLS_SERVER_PROTOCOLS}
+ 
+# TLS encryption - client
+smtp_tls_security_level         = ${TLS_CLIENT_SECURITY_LEVEL}
+smtp_tls_loglevel               = ${LOG_LEVEL_TLS_CLIENT}
+smtp_tls_mandatory_ciphers      = ${TLS_CLIENT_MANDATORY_CIPHERS}
+smtp_tls_mandatory_protocols    = ${TLS_CLIENT_MANDATORY_PROTOCOLS}
+smtp_tls_session_cache_database = btree:${DATA_LOCATION}smtp_scache
+ 
+### Before-220 tests
+postscreen_dnsbl_reply_map      = pcre:/etc/postfix/postscreen_dnsbl_reply_map.pcre
+postscreen_blacklist_action     = drop
+postscreen_dnsbl_action         = enforce
+postscreen_greet_action         = enforce
+postscreen_dnsbl_threshold      = 4
+postscreen_dnsbl_sites =
+        zen.spamhaus.org*3
+        b.barracudacentral.org*2
+        bl.spameatingmonkey.net*2
+        z.mailspike.net*2
+        bl.mailspike.net
+        bl.spamcop.net
+        dnsbl.sorbs.net
+        psbl.surriel.com
+        swl.spamhaus.org*-4
+postscreen_whitelist_interfaces = \$mynetworks, static:all
+ 
+# spam filter and DKIM signatures via rspamd
+smtpd_milters         = inet:${RSPAM_HOST}:${RSPAM_PORT}
+non_smtpd_milters     = inet:${RSPAM_HOST}:${RSPAM_PORT}
+milter_protocol       = 6
+milter_mail_macros    = i {mail_addr} {client_addr} {client_name} {auth_authen}
+milter_default_action = accept
+ 
+# check incoming mail for 'stuff'
+smtpd_recipient_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        reject_unknown_recipient_domain,
+        reject_non_fqdn_recipient,
+        reject_unauth_destination,
+        reject_unauth_pipelining,
+        reject_invalid_hostname
+ 
+smtpd_data_restrictions =
+        reject_unauth_pipelining
+ 
+# client restrictions
+smtpd_client_restrictions =
+        permit_mynetworks,
+        permit_auth_destination,
+        permit_sasl_authenticated,
+ 
+# anybody out there?
+smtpd_helo_restrictions =
+        permit_mynetworks,
+        reject_invalid_hostname
+ 
+# who may send
+smtpd_sender_restrictions =
+        permit_mynetworks,
+        permit_sasl_authenticated,
+        check_sender_access hash:/etc/postfix/sender_domain_checks,
+        reject_unknown_sender_domain,
+ 
+# mail reject codes
+unknown_address_reject_code             = 550
+unknown_client_reject_code              = 550
+unknown_hostname_reject_code            = 554
+unknown_local_recipient_reject_code     = 550
+unknown_relay_recipient_reject_code     = 554
+unknown_virtual_alias_reject_code       = 550
+unknown_virtual_mailbox_reject_code     = 550
+ 
+# deferred mail intervals
+ 
+queue_run_delay                 = ${QUEUE_DELAY}
+# How often the queue manager scans the queue for deferred mail.
+ 
+# The minimal amount of time a message won't be looked at, and the minimal amount of time to stay away from a "dead" destination.
+minimal_backoff_time            = ${BACKOFF_TIME_MIN}
+ 
+# The maximal amount of time a message won't be looked at after a delivery failure.
+maximal_backoff_time            = ${BACKOFF_TIME_MAX}
+ 
+# How long a message stays in the queue before it is sent back as undeliverable. Specify 0 for mail that should be returned immediately after the first unsuccessful delivery attempt.
+maximal_queue_lifetime          = ${LIFETIME_QUEUE_MAX}
+ 
+# How long a MAILER-DAEMON message stays in the queue before it is considered undeliverable. Specify 0 for mail that should be tried only once.
+bounce_queue_lifetime           = ${LIFETIME_QUEUE_BOUNCE}
+ 
+# The size of many in-memory queue manager data structures. Among others, this parameter limits the size of the short-term, in-memory list of "dead" destinations. Destinations that don't fit the list are not added.
+qmgr_message_recipient_limit    = ${LIMIT_MESSAGE_RECIPIENTS}
+ 
+# mail size
+message_size_limit              = ${LIMIT_MESSAGE_SIZE}
+EOF
+	fi
+}
+
+configure_postfix_postscreen() {
+	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	    print_notice "Configuring Postfix - Postscreen"
+		cat <<EOF > /etc/postfix/postscreen_dnsbl_reply_map.pcre
+## Custom Generated Postscreen DNSBL Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+
+# We will be rejecting much mail which is listed in multiple DNSBLs.
+# We're not proud of some of the lists we are using, thus have given
+# them lower scores in postscreen_dnsbl_sites listing. So this checks
+# the DNSBL name postscreen(8) gets from dnsblog(8), and if it's not
+# one of our Tier 1 DNSBL sites, it changes what the sender will see:
+ 
+!/^zen\\.spamhaus\\.org\$/         multiple DNS-based blocklists
+EOF
+	fi
+}
+
+configure_postfix_master() {
+	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	    print_notice "Configuring Postfix - Master"
+		cat <<EOF > /etc/postfix/master.cf
+## Custom Generated Postfix Master Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+
+# ==========================================================================
+# service type  private unpriv  chroot  wakeup  maxproc command + args
+#               (yes)   (yes)   (no)    (never) (100)
+# ==========================================================================
+#smtp      inet  n       -       y       -       -       smtpd
+smtp      inet  n       -       n       -       1       postscreen
+smtpd     pass  -       -       n       -       -       smtpd
+dnsblog   unix  -       -       n       -       0       dnsblog
+tlsproxy  unix  -       -       n       -       0       tlsproxy
+submission inet n       -       n       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_tls_auth_only=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_client_restrictions=\$mua_client_restrictions
+  -o smtpd_helo_restrictions=\$mua_helo_restrictions
+  -o smtpd_sender_restrictions=\$mua_sender_restrictions
+  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+smtps     inet  n       -       y       -       -       smtpd
+  -o syslog_name=postfix/smtps
+  -o smtpd_tls_wrappermode=yes
+  -o smtpd_sasl_auth_enable=yes
+  -o smtpd_reject_unlisted_recipient=no
+  -o smtpd_client_restrictions=\$mua_client_restrictions
+  -o smtpd_helo_restrictions=\$mua_helo_restrictions
+  -o smtpd_sender_restrictions=\$mua_sender_restrictions
+  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+#628       inet  n       -       n       -       -       qmqpd
+pickup    unix  n       -       n       60      1       pickup
+cleanup   unix  n       -       n       -       0       cleanup
+qmgr      unix  n       -       n       300     1       qmgr
+#qmgr     unix  n       -       n       300     1       oqmgr
+tlsmgr    unix  -       -       n       1000?   1       tlsmgr
+rewrite   unix  -       -       n       -       -       trivial-rewrite
+bounce    unix  -       -       n       -       0       bounce
+defer     unix  -       -       n       -       0       bounce
+trace     unix  -       -       n       -       0       bounce
+verify    unix  -       -       n       -       1       verify
+flush     unix  n       -       n       1000?   0       flush
+proxymap  unix  -       -       n       -       -       proxymap
+proxywrite unix -       -       n       -       1       proxymap
+smtp      unix  -       -       n       -       -       smtp
+relay     unix  -       -       n       -       -       smtp
+        -o syslog_name=postfix/\$service_name
+#       -o smtp_helo_timeout=5 -o smtp_connect_timeout=5
+showq     unix  n       -       n       -       -       showq
+error     unix  -       -       n       -       -       error
+retry     unix  -       -       n       -       -       error
+discard   unix  -       -       n       -       -       discard
+local     unix  -       n       n       -       -       local
+virtual   unix  -       n       n       -       -       virtual
+lmtp      unix  -       -       n       -       -       lmtp
+anvil     unix  -       -       n       -       1       anvil
+scache    unix  -       -       n       -       1       scache
+#
+# maildrop. See the Postfix MAILDROP_README file for details.
+# Also specify in main.cf: maildrop_destination_recipient_limit=1
+#
+maildrop  unix  -       n       n       -       -       pipe
+  flags=DRhu user=postfix argv=/usr/bin/maildrop -d \${recipient}
+#
+# See the Postfix UUCP_README file for configuration details.
+#
+uucp      unix  -       n       n       -       -       pipe
+  flags=Fqhu user=uucp argv=uux -r -n -z -a\$sender - \$nexthop!rmail (\$recipient)
+EOF
+	fi
+}
+
+configure_postfix_sasl() {
+	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	    print_notice "Configuring SASL SMTPD"
+		case "${SASL_AUTH_TYPE}" in
+			"LDAP" | "ldap" )
+				print_debug "SASL: Configuring for LDAP"
+				cat <<EOF > /etc/postfix/ldap-saslauthd.cf
+pwcheck_method: saslauthd
+mech_list: plain login
+
+ldap_servers: ${LDAP_HOST}
+ldap_bind_dn: ${LDAP_BIND_DN}
+ldap_password: ${LDAP_BIND_PASS}
+ldap_filter: ${LDAP_FILTER_SASL}
+ldap_version: ${LDAP_VERSION}
+ldap_timeout: ${LDAP_TIMEOUT}
+ldap_scope: ${LDAP_SCOPE_SASL}
+ldap_search_base: ${LDAP_SEARCH_DN}
+ldap_auth_method: bind
+EOF
+		    ;;
+			"IMAP" | "imap" )
+				print_debug "SASL: Configuring for IMAP"
+				cat <<EOF >/etc/sasl/smtpd.conf
+pwcheck_method: saslauthd
+mech_list: plain login
+EOF
+			;;
+		esac
+	fi
+}
+
+configure_relay_host() {
+	if var_true $ENABLE_RELAY_HOST ; then
+		if [ "$SETUP_TYPE" = "AUTO" ]; then
+		    print_notice "Configuring SASL Outgoing Password"
+			if [ -z ${RELAY_USER} ] || [ -z ${RELAY_PASS} ] ; then
+				:
+			else
+				relayuserpass="${RELAY_USER}:${RELAY_PASS}"
+			fi			
+			
+			cat <<EOF > /etc/postfix/sasl_passwd
+## Custom Generated SASL Relay Outgoing Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on `date`
+		
+${RELAY_HOST}:${RELAY_PORT} ${relayuserpass}
+EOF
+
+			postmap /etc/postfix/sasl_passwd
+		fi
+	fi
+}
+lmtp_ready() {
+    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
+    COUNTER=0
+    while ! (silent nc -z ${LMTP_HOST} ${LMTP_PORT}) ; do
+        sleep 5
+        let COUNTER+=5
+        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+    done
+}
+
+rspam_ready() {
+    print_debug "Checking to see if RSpam Host: ${RSPAM_HOST} is accessible"
+    COUNTER=0
+    while ! (silent nc -z ${RSPAM_HOST} ${RSPAM_PORT}) ; do
+        sleep 5
+        let COUNTER+=5
+        print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+    done
+}

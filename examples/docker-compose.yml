@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+
+  postfix-relay:
+    image: registry.selfdesign.org/docker/postfix:latest
+    container_name: postfix-relay
+    ports:
+      - "25:25"
+      - 587:587
+    #volumes:
+      #- ./logs:/var/log/
+    environment:
+    - SMTP_HOST=smtp.example.com
+    - SMTP_PORT=25
+    - SMTP_USER=user@example.com
+    - SMTP_PASS=super-secure-password
+    - SERVER_NAME=smtp.example.com
+
+    - USE_TLS=no
+    - TLS_VERIFY=may
+
+    - ALLOWED_HOSTS=192.168.0.0/16
+    - ZABBIX_HOSTNAME=postfix-relay
+    networks:
+    - internal
+    - services
+    restart: always
+
+networks:
+  internal:
+    external: false
+  services:
+    external: true
+
+

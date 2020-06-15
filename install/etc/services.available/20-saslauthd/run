@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv /bin/bash
+
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="sasl-authd"
+
+check_container_initialized
+liftoff
+
+print_info "Starting SASL Authentication Daemon"
+silent exec /usr/sbin/saslauthd -a ${sasl_auth_type} \
+                                -O ${sasl_mech_options} \
+                                -c \
+                                -r \
+                                -n 0 \
+                                -d

@@ -1,0 +1,35 @@
+FROM registry.selfdesign.org/docker/debian/buster:latest
+LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+
+## Set Defaults
+ENV ENABLE_SMTP=FALSE \
+    ZABBIX_HOSTNAME=postfix-app
+
+## Dependencies Setup
+RUN set -x && \
+    apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+                fail2ban \
+                libsasl2-modules-db \
+                libsasl2-modules-ldap \
+                nc
+                openssl \
+                pflogsumm \
+                postfix \
+                postfix-pcre \
+                postfix-lmdb \
+                postfix-ldap \
+                rsyslog \
+                sasl2-bin \
+                && \
+    ## Cleanup
+    cd /etc/fail2ban && \
+    rm -rf fail2ban.conf fail2ban.d jail.conf jail.d paths-*.conf && \
+    rm -rf /var/lib/apt/lists/*
+
+## Networking Configuration
+EXPOSE 25 587
+
+## Entrypoint Configuration
+ADD install /

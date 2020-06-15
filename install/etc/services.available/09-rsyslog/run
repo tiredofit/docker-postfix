@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv /bin/bash
+
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="rsyslog"
+check_container_initialized
+check_service_initialized init
+liftoff
+
+print_info "Starting rsyslogd"
+silent exec rsyslogd -n

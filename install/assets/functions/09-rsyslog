@@ -1,0 +1,40 @@
+#!/usr/bin/with-contenv bash
+
+LOG_TYPE=${LOG_TYPE:-"FILE"}
+LOG_FILE=${LOG_FILE:-"postfix.log"}
+LOG_LOCATION=${LOG_LOCATION:-"/logs/"}
+
+configure_logging() {
+	if [ "${LOG_TYPE}" = "CONSOLE" ] || [ "${LOG_TYPE}" = "console" ] ; then
+		print_notice "Setting Logging to Console"
+	        LOG_LOCATION="/dev/"
+       		LOG_FILE="console"
+		rm -rf /etc/logrotate.d/postfix
+        else
+                sed -i "s#<LOG_LOCATION>#${LOG_LOCATION}#g" /etc/logrotate.d/postfix
+	fi
+	
+	touch ${LOG_LOCATION}${LOG_FILE}
+	chown postfix:postfix ${LOG_LOCATION}${LOG_FILE}
+
+	cat <<EOF > /etc/rsyslog.conf
+
+## Custom Generated rsyslog Configuration! Do not edit, instead set ENV Vars
+## Last Generated on `date`
+
+\$WorkDirectory /var/lib/rsyslog
+\$FileOwner postfix
+\$FileGroup postfix
+\$FileCreateMode 0640
+\$DirCreateMode 0755
+\$Umask 0022
+
+#\$RepeatedMsgReduction on
+
+module(load="immark")
+module(load="imuxsock")
+mail.*							-${LOG_LOCATION}${LOG_FILE}
+
+EOF
+}
+

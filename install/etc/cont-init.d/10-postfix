@@ -1,0 +1,26 @@
+#!/usr/bin/with-contenv bash
+
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="postfix"
+
+
+## Postfix Configuration
+if var_false $ENABLE_ZABBIX ; then rm -rf /assets/cron/crontab.txt; fi;
+if var_true $ENABLE_LDAP ; then configure_ldap; fi;
+certificates dhparam
+certificates ${TLS_SERVER_CERT_FILE}
+configure_data_dir
+configure_ldap
+configure_postfix_main
+configure_postfix_master
+configure_postfix_postscreen
+configure_postfix_sasl
+configure_relay_host
+lmtp_ready
+rspam_ready
+
+postalias /etc/postfix/aliases
+
+echo "${SERVER_NAME}" > /etc/mailname
+
+liftoff

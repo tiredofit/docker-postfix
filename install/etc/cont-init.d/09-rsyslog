@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="rsyslog"
+
+configure_logging
+
+liftoff
