@@ -1,7 +1,8 @@
 #!/usr/bin/with-contenv /bin/bash
 
-for s in /assets/functions/*; do source $s; done
-PROCESS_NAME="postfix-relay"
+source /assets/functions/00-container
+prepare_service defaults single
+PROCESS_NAME="postfix"
 
 check_container_initialized
 check_service_initialized init

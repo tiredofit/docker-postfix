@@ -1,3 +1,9 @@
+## 0.0.5 2020-06-15 <dave at tiredofit dot ca>
+
+   ### Added
+      - Modernize image to support tiredofit/alpine 5.xx base series
+
+
 ## 0.0.4 2020-06-05 <dave at tiredofit dot ca>
 
    ### Changed

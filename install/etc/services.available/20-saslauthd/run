@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv /bin/bash
 
-for s in /assets/functions/*; do source $s; done
+source /assets/functions/00-container
+prepare_service defaults all
 PROCESS_NAME="sasl-authd"
 
 check_container_initialized
