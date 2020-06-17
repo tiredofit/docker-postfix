@@ -1,10 +1,12 @@
-# registry.selfdesign.org/docker/postfix-relay
+# hub.docker.com/r/tiredofit/postfix
 
 # Introduction
 
-Dockerfile to build a simple Postfix container designed to relay messages to an external SMTP Server
+Dockerfile to build a Postfix image to support MTA functionality.
 
-This Container uses Alpine:3.10 as a base.
+This is a work in progress and not stable for production use.
+
+This Container uses Alpine:3.12 as a base.
 
 [Changelog](CHANGELOG.md)
 
@@ -28,16 +30,13 @@ This Container uses Alpine:3.10 as a base.
 
 # Prerequisites
 
-This image will need to connect to an external SMTP Server with User Authentication enabled.
-
-
 # Installation
 
-Automated builds of the image are available on [Registry](https://registry.selfdesign.org/docker/postfix-relay) and is the recommended method of installation.
+Automated builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/postfix) and is the recommended method of installation.
 
 
 ```bash
-docker pull registry.selfdesign.org/docker/postfix-relay
+docker pull tiredofit/postfix
 ```
 
 # Quick Start
@@ -55,7 +54,6 @@ The following directories are used for configuration and can be mapped for persi
 
 | Directory | Description |
 |-----------|-------------|
-| `/var/log` | Postfix Mail Logs |
 
 
 ### Environment Variables
@@ -64,15 +62,6 @@ Below is the complete list of available options that can be used to customize yo
 
 | Parameter | Description |
 |-----------|-------------|
-| `SMTP_HOST` | The SMTP Host to forward mails to (e.g. mail.hostname.com) |
-| `SMTP_USER` | The username for authentication to remote SMTP (e.g. username@hostname.com) |
-| `SMTP_PASS` | The password for above username (e.g. password) |
-| `SERVER_NAME` | The hostname to identify ourselves to the remote SMTP Server (e.g. yourhost.hostname.com) |
-| `ACCEPTED_NETWORKS` | Who to allow access to relay (Default 172.16.0.0/12)
-| `USE_TLS` | Use TLS when sending (either yes or no)
-| `TLS_VERIFY` | Trust Level for checking remote cert (none, may, encrypt, dane, dane-only, 
-fingerprint, verify, secure - Default may)
-
 
 # Maintenance
 #### Shell Access
@@ -80,7 +69,7 @@ fingerprint, verify, secure - Default may)
 For debugging and maintenance purposes you may want access the containers shell. 
 
 ```bash
-docker exec -it (whatever your container name is e.g. postfix-relay) bash
+docker exec -it (whatever your container name is e.g. postfix) bash
 ```
 
 # References
