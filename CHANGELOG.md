@@ -1,3 +1,9 @@
+## 0.7.0 2020-06-21 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix startup issues
+
+
 ## 0.6.0 2020-06-21 <dave at tiredofit dot ca>
 
    ### Added
