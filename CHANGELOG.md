@@ -1,3 +1,10 @@
+## 0.6.0 2020-06-21 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add enable/disable LMTP
+      - Add enable/disable RSPAMD features
+
+
 ## 0.0.5 2020-06-15 <dave at tiredofit dot ca>
 
    ### Added

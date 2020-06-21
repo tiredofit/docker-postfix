@@ -268,7 +268,7 @@ configure_postfix_main() {
 			else
 				RELAY_ENABLE_AUTH="yes"
 			fi
-            
+    
             truefalse_yesno RELAY_ENABLE_TLS
 
 			smtp_relay=$(cat <<EOF
@@ -278,6 +278,18 @@ smtp_sasl_auth_enable = ${RELAY_ENABLE_AUTH}
 smtp_sasl_security_options = ${RELAY_SECURITY_OPTIONS}
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_use_tls = ${RELAY_ENABLE_TLS}
+EOF
+						)
+		fi
+
+	    if var_true ${ENABLE_RSPAMD}; then
+			rspamd_settings=$(cat <<EOF
+# spam filter and DKIM signatures via rspamd
+smtpd_milters         = inet:${RSPAM_HOST}:${RSPAM_PORT}
+non_smtpd_milters     = inet:${RSPAM_HOST}:${RSPAM_PORT}
+milter_protocol       = 6
+milter_mail_macros    = i {mail_addr} {client_addr} {client_name} {auth_authen}
+milter_default_action = accept
 EOF
 						)
 		fi
@@ -319,7 +331,7 @@ ${smtp_relay}
 # virtual maps
 virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
 virtual_mailbox_maps    = ldap:/etc/postfix/ldap-users.cf
-###########virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf
+virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf
 virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
  
 # prevent leaking valid e-mail addresses
@@ -376,13 +388,8 @@ postscreen_dnsbl_sites =
         swl.spamhaus.org*-4
 postscreen_whitelist_interfaces = \$mynetworks, static:all
  
-# spam filter and DKIM signatures via rspamd
-smtpd_milters         = inet:${RSPAM_HOST}:${RSPAM_PORT}
-non_smtpd_milters     = inet:${RSPAM_HOST}:${RSPAM_PORT}
-milter_protocol       = 6
-milter_mail_macros    = i {mail_addr} {client_addr} {client_name} {auth_authen}
-milter_default_action = accept
- 
+${rspamd_Settings}
+
 # check incoming mail for 'stuff'
 smtpd_recipient_restrictions =
         permit_mynetworks,
@@ -605,21 +612,25 @@ EOF
 	fi
 }
 lmtp_ready() {
-    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
-    COUNTER=0
-    while ! (silent nc -z ${LMTP_HOST} ${LMTP_PORT}) ; do
-        sleep 5
-        let COUNTER+=5
-        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
-    done
+    if var_true ${ENABLE_LMTP}; then
+	    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
+	    COUNTER=0
+	    while ! (silent nc -z ${LMTP_HOST} ${LMTP_PORT}) ; do
+	        sleep 5
+	        let COUNTER+=5
+	        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+	    done
+	fi
 }
 
 rspam_ready() {
-    print_debug "Checking to see if RSpam Host: ${RSPAM_HOST} is accessible"
-    COUNTER=0
-    while ! (silent nc -z ${RSPAM_HOST} ${RSPAM_PORT}) ; do
-        sleep 5
-        let COUNTER+=5
-        print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
-    done
+    if var_true ${ENABLE_RSPAMD}; then
+    	print_debug "Checking to see if RSpam Host: ${RSPAM_HOST} is accessible"
+    	COUNTER=0
+    	while ! (silent nc -z ${RSPAM_HOST} ${RSPAM_PORT}) ; do
+        	sleep 5
+        	let COUNTER+=5
+        	print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+    	done
+    fi
 }
