@@ -21,6 +21,8 @@ lmtp_ready
 rspam_ready
 
 postalias /etc/postfix/aliases
+touch ${DATA_LOCATION}sender_domain_checks
+postmap ${DATA_LOCATION}sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 

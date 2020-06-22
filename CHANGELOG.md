@@ -1,3 +1,10 @@
+## 0.8.0 2020-06-22 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Updates to SASL to fix SMTP sending
+      - Removed chroot on one process
+
+
 ## 0.7.0 2020-06-21 <dave at tiredofit dot ca>
 
    ### Changed

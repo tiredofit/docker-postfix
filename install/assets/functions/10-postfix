@@ -3,7 +3,7 @@
 case "${SASL_AUTH_TYPE}" in
 	"LDAP" | "ldap" )
         sasl_auth_type="ldap"
-        sasl_mech_options="/etc/postfix/saslauthd.cf"
+        sasl_mech_options="/etc/sasl2/smtpd.conf"
     ;;
 	"IMAP" | "imap" )
 		sasl_auth_type="rimap"
@@ -192,10 +192,6 @@ configure_data_dir() {
 	chmod 700 ${DATA_LOCATION}
 	chown postfix:postfix ${DATA_LOCATION}
 	mkdir -p ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
-	#mkdir -p ${DATA_LOCATION}var/run/saslauthd
-	#chown -R postfix ${DATA_LOCATION}/var/run/saslauthd
-    #mkfifo ${DATA_LOCATION}public/pickup
-    #ln -s /etc/postfix/aliases /etc/aliases
 	chown -R postfix:root ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
 	chown -R postfix:postdrop ${DATA_LOCATION}{maildrop,public}
 	chown -R root:postfix ${DATA_LOCATION}pid
@@ -282,8 +278,9 @@ EOF
 						)
 		fi
 
-	    if var_true ${ENABLE_RSPAMD}; then
-			rspamd_settings=$(cat <<EOF
+	    if var_true $ENABLE_RSPAM; then
+	    	print_debug "Enabling RSPAM Settings"
+			rspam_settings=$(cat <<EOF
 # spam filter and DKIM signatures via rspamd
 smtpd_milters         = inet:${RSPAM_HOST}:${RSPAM_PORT}
 non_smtpd_milters     = inet:${RSPAM_HOST}:${RSPAM_PORT}
@@ -347,7 +344,9 @@ mua_helo_restrictions = permit_mynetworks, reject_non_fqdn_hostname, reject_inva
 smtpd_sasl_path                 = smtpd
 smtpd_sasl_auth_enable          = ${SASL_AUTH_ENABLE}
 broken_sasl_auth_clients        = ${SASL_BROKEN_AUTH_CLIENTS}
- 
+smtpd_sasl_security_options     = ${SASL_SECURITY_OPTIONS}
+smtpd_sasl_tls_security_options = ${SASL_SECURITY_OPTIONS_TLS}
+
 # TLS encryption - server
 smtpd_tls_security_level        = ${TLS_SERVER_SECURITY_LEVEL}
 smtpd_tls_auth_only             = ${TLS_SERVER_AUTH_ONLY}
@@ -388,7 +387,7 @@ postscreen_dnsbl_sites =
         swl.spamhaus.org*-4
 postscreen_whitelist_interfaces = \$mynetworks, static:all
  
-${rspamd_Settings}
+${rspam_settings}
 
 # check incoming mail for 'stuff'
 smtpd_recipient_restrictions =
@@ -418,7 +417,7 @@ smtpd_helo_restrictions =
 smtpd_sender_restrictions =
         permit_mynetworks,
         permit_sasl_authenticated,
-        check_sender_access hash:/etc/postfix/sender_domain_checks,
+        check_sender_access hash:${DATA_LOCATION}sender_domain_checks,
         reject_unknown_sender_domain,
  
 # mail reject codes
@@ -487,12 +486,11 @@ configure_postfix_master() {
 # service type  private unpriv  chroot  wakeup  maxproc command + args
 #               (yes)   (yes)   (no)    (never) (100)
 # ==========================================================================
-#smtp      inet  n       -       y       -       -       smtpd
 smtp      inet  n       -       n       -       1       postscreen
-smtpd     pass  -       -       n       -       -       smtpd
+smtpd     pass  -       -       n       -       -       smtpd ${log_verbosity}
 dnsblog   unix  -       -       n       -       0       dnsblog
 tlsproxy  unix  -       -       n       -       0       tlsproxy
-submission inet n       -       n       -       -       smtpd
+submission inet n       -       n       -       -       smtpd ${log_verbosity}
   -o syslog_name=postfix/submission
   -o smtpd_tls_security_level=encrypt
   -o smtpd_sasl_auth_enable=yes
@@ -504,7 +502,7 @@ submission inet n       -       n       -       -       smtpd
   -o smtpd_recipient_restrictions=
   -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
   -o milter_macro_daemon_name=ORIGINATING
-smtps     inet  n       -       y       -       -       smtpd
+smtps     inet  n       -       n       -       -       smtpd ${log_verbosity}
   -o syslog_name=postfix/smtps
   -o smtpd_tls_wrappermode=yes
   -o smtpd_sasl_auth_enable=yes
@@ -539,7 +537,7 @@ retry     unix  -       -       n       -       -       error
 discard   unix  -       -       n       -       -       discard
 local     unix  -       n       n       -       -       local
 virtual   unix  -       n       n       -       -       virtual
-lmtp      unix  -       -       n       -       -       lmtp
+lmtp      unix  -       -       n       -       -       lmtp ${log_verbosity}
 anvil     unix  -       -       n       -       1       anvil
 scache    unix  -       -       n       -       1       scache
 #
@@ -563,7 +561,7 @@ configure_postfix_sasl() {
 		case "${SASL_AUTH_TYPE}" in
 			"LDAP" | "ldap" )
 				print_debug "SASL: Configuring for LDAP"
-				cat <<EOF > /etc/postfix/ldap-saslauthd.cf
+				cat <<EOF > /etc/sasl2/smtpd.conf
 pwcheck_method: saslauthd
 mech_list: plain login
 
@@ -580,7 +578,7 @@ EOF
 		    ;;
 			"IMAP" | "imap" )
 				print_debug "SASL: Configuring for IMAP"
-				cat <<EOF >/etc/sasl/smtpd.conf
+				cat <<EOF >/etc/sasl2/smtpd.conf
 pwcheck_method: saslauthd
 mech_list: plain login
 EOF

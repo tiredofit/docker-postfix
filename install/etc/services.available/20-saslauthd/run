@@ -13,4 +13,5 @@ silent exec /usr/sbin/saslauthd -a ${sasl_auth_type} \
                                 -c \
                                 -r \
                                 -n 0 \
-                                -d
+                                -d ${SASLAUTH_EXTRA_ARGS}
+
