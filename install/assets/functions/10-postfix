@@ -344,8 +344,8 @@ mua_helo_restrictions = permit_mynetworks, reject_non_fqdn_hostname, reject_inva
 smtpd_sasl_path                 = smtpd
 smtpd_sasl_auth_enable          = ${SASL_AUTH_ENABLE}
 broken_sasl_auth_clients        = ${SASL_BROKEN_AUTH_CLIENTS}
-smtpd_sasl_security_options     = ${SASL_SECURITY_OPTIONS}
-smtpd_sasl_tls_security_options = ${SASL_SECURITY_OPTIONS_TLS}
+#smtpd_sasl_security_options     = ${SASL_SECURITY_OPTIONS}
+#smtpd_sasl_tls_security_options = ${SASL_SECURITY_OPTIONS_TLS}
 
 # TLS encryption - server
 smtpd_tls_security_level        = ${TLS_SERVER_SECURITY_LEVEL}

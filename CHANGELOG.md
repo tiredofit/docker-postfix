@@ -1,3 +1,9 @@
+## 0.8.1 2020-06-22 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Temporarily disable some SASL features
+
+
 ## 0.8.0 2020-06-22 <dave at tiredofit dot ca>
 
    ### Changed
