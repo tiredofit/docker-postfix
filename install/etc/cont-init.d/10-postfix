@@ -1,15 +1,15 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service 
+prepare_service
 PROCESS_NAME="postfix"
 
 
 ## Postfix Configuration
-if var_false $ENABLE_ZABBIX ; then rm -rf /assets/cron/crontab.txt; fi;
-if var_true $ENABLE_LDAP ; then configure_ldap; fi;
+if var_false "$ENABLE_ZABBIX" ; then rm -rf /assets/cron/crontab.txt; fi;
+if var_true "$ENABLE_LDAP" ; then configure_ldap; fi;
 certificates dhparam
-certificates ${TLS_SERVER_CERT_FILE}
+certificates "${TLS_SERVER_CERT_FILE}"
 configure_data_dir
 configure_ldap
 configure_postfix_main
@@ -21,8 +21,8 @@ lmtp_ready
 rspam_ready
 
 postalias /etc/postfix/aliases
-touch ${DATA_LOCATION}sender_domain_checks
-postmap ${DATA_LOCATION}sender_domain_checks
+touch "${DATA_LOCATION}"sender_domain_checks
+postmap "${DATA_LOCATION}"sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 

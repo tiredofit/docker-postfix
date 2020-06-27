@@ -250,7 +250,6 @@ scope=${LDAP_SCOPE_ALIAS}
 query_filter=${LDAP_FILTER_ALIAS}
 result_attribute=${LDAP_ATTRIBUTE_ALIAS}
 EOF
-	fi
 
 		### Setup LDAP Groups
 		cat <<EOF > /etc/postfix/ldap-groups.cf
@@ -268,11 +267,10 @@ scope=${LDAP_SCOPE_GROUPS}
 query_filter=${LDAP_FILTER_GROUPS}
 result_attribute=${LDAP_ATTRIBUTE_GROUPS}
 EOF
-	fi
 
-		### Setup LDAP Aliases
+		### Setup LDAP Groups Expansion
 		cat <<EOF > /etc/postfix/ldap-groups-expand.cf
-## Custom Generated LDAP Aliases Configuration! Do not edit, instead set ENV Vars
+## Custom Generated LDAP Groups Expansion Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
 ## Last Generated on $(date)
 
@@ -287,7 +285,6 @@ query_filter=${LDAP_FILTER_GROUPS_EXPAND}
 result_attribute=${LDAP_ATTRIBUTE_GROUPS_EXPAND}
 EOF
 	fi
-
 }
 
 configure_postfix_main() {
