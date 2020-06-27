@@ -16,23 +16,23 @@ certificates() {
 	CA_SUBJECT=${CA_SUBJECT:-"/C=XX/ST=Postfix/L=Postfix/O=Postfix/CN="}
 	CA_CERT_SUBJECT=${CA_CERT_SUBJECT:-${CA_SUBJECT}${CA_NAME}}
 	CA_CERT_FILE=${CA_CERT_FILE:-"/certs/${CA_NAME}/${CA_NAME}.crt"}
-	CA_KEY_FILE=${CA_KEY_FILE:-"`dirname ${CA_CERT_FILE}`/${CA_NAME}.key"}
+	CA_KEY_FILE=${CA_KEY_FILE:-"$(dirname "${CA_CERT_FILE}")/${CA_NAME}.key"}
 	CREATE_CA=${CREATE_CA:-"TRUE"}
 
 	certificates_create_certificate_authority() {
-		if [ ! -f ${CA_CERT_FILE} ] ; then
+		if [ ! -f "${CA_CERT_FILE}" ] ; then
 
 			print_debug "Certificates: Creating Self Signed Certificate Authority"
-			mkdir -p `dirname ${CA_CERT_FILE}`
-			echo "000a" > `dirname ${CA_CERT_FILE}`/serial
-			touch `dirname ${CA_CERT_FILE}`/certindex
+			mkdir -p "$(dirname "${CA_CERT_FILE}")"
+			echo "000a" > "$(dirname "${CA_CERT_FILE}")"/serial
+			touch "$(dirname "${CA_CERT_FILE}")"/certindex
 
 			silent eval "openssl req \
 			      -newkey rsa:4096 -keyout ${CA_KEY_FILE} \
 			      -x509 -days 3650 -nodes -out ${CA_CERT_FILE} \
 			      -subj \"${CA_CERT_SUBJECT}\""
 
-			cat > `dirname ${CA_CERT_FILE}`/$CA_NAME.conf << EOF
+			cat > "$(dirname "${CA_CERT_FILE}")"/$CA_NAME.conf << EOF
 			[ ca ]
 			default_ca = $CA_NAME
 
@@ -40,9 +40,9 @@ certificates() {
 			unique_subject = no
 			new_certs_dir = .
 			certificate = ${CA_CERT_FILE}
-			database = `dirname ${CA_CERT_FILE}`/certindex
+			database = "$(dirname "${CA_CERT_FILE}")"/certindex
 			private_key = ${CA_KEY_FILE}
-			serial = `dirname ${CA_CERT_FILE}`/serial
+			serial = "$(dirname "${CA_CERT_FILE}")"/serial
 			default_days = 3650
 			default_md = default
 			policy = ${CA_NAME}_policy
@@ -85,16 +85,16 @@ EOF
 	certificates_create_certificate() {
 	    if [ "$1" != "" ] ; then
 
-	    	if var_true $CREATE_CA ; then
-		        if [ ! -f ${CA_CERT_FILE} ] || [ ! -f ${CA_KEY_FILE} ] ; then
+	    	if var_true "$CREATE_CA" ; then
+		        if [ ! -f "${CA_CERT_FILE}" ] || [ ! -f "${CA_KEY_FILE}" ] ; then
 					print_debug "Certificates: No CA Found - Creating before generating certificates"
 					certificates_create_certificate_authority
 				fi
-			fi            
-            CERT_SUBJECT="${CA_SUBJECT}$(basename ${1%%.*})"
+			fi
+            CERT_SUBJECT="${CA_SUBJECT}$(basename "${1%%.*}")"
 
-	    	if var_true $CREATE_CA ; then
-				if [ ! -f ${1%%.*}.key ] ; then
+	    	if var_true "$CREATE_CA" ; then
+				if [ ! -f "${1%%.*}".key ] ; then
 					print_debug "Certificates: Creating Certificate: ${1}"
 					silent eval "openssl req \
 			      		  -newkey rsa:2048 -keyout ${1%%.*}.key \
@@ -102,33 +102,33 @@ EOF
 					      -subj \"${CERT_SUBJECT}\""
 				fi
 			else
-				if [ ! -f ${1%%.*}.key ] ; then
+				if [ ! -f "${1%%.*}".key ] ; then
 					print_debug "Certificates: Creating Certificate: ${1}"
 					silent eval "openssl req \
-						  -new -x509 -nodes -days 3650 
-						  -config /tmp/openssl.cnf 
+						  -new -x509 -nodes -days 3650
+						  -config /tmp/openssl.cnf
 						  -out ${1%%.*}.crt \
 						  -keyout ${1%%.*}.key"
 				fi
 			fi
 
-	    	if var_true $CREATE_CA ; then
-				if [ ! -f ${1%%.*}.cert ] ; then
+	    	if var_true "$CREATE_CA" ; then
+				if [ ! -f "${1%%.*}".cert ] ; then
 					print_debug "Certificates: Signing Certificate: ${1}"
-					silent eval "openssl ca -batch -config `dirname ${CA_CERT_FILE}`/${CA_NAME}.conf -notext -in ${1%%.*}.csr -out ${1%%.*}.crt"
-					rm -rf $(tail -n 1 $(dirname ${CA_CERT_FILE})/certindex | awk '{print $3}').pem
-					rm -rf ${1%%.*}.csr
+					silent eval "openssl ca -batch -config $(dirname "${CA_CERT_FILE}")/${CA_NAME}.conf -notext -in ${1%%.*}.csr -out ${1%%.*}.crt"
+					rm -rf "$(tail -n 1 "$(dirname "${CA_CERT_FILE}")"/certindex | awk '{print $3}').pem"
+					rm -rf "${1%%.*}".csr
 				fi
 			fi
 
-			if [ -f ${1%%.*}.crt ] && [ -f ${1%%.*}.key ] ; then
+			if [ -f "${1%%.*}".crt ] && [ -f "${1%%.*}".key ] ; then
 				print_debug "Certificates: Merging Certificate and Key for: ${1}"
-	   			cat ${1%%.*}.crt ${1%%.*}.key > ${1%%.*}.pem
+	   			cat "${1%%.*}".crt "${1%%.*}".key > "${1%%.*}".pem
 			fi
 
-			if [ ! -f ${1%%.*}-public.pem ] ; then
+			if [ ! -f "${1%%.*}"-public.pem ] ; then
 				print_debug "Certificates: Creating Public Key for: ${1}"
-				silent openssl rsa -in ${1%%.*}.pem -out ${1%%.*}-public.pem -outform PEM -pubout
+				silent openssl rsa -in "${1%%.*}".pem -out "${1%%.*}"-public.pem -outform PEM -pubout
 			fi
 		fi
 	}
@@ -136,15 +136,15 @@ EOF
     certificates_check_permissions() {
 		if sudo -u postfix [ ! -r "${1}" ] ; then
     		print_debug "Certificates: Setting Read Permissions on ${1}"
-    		chmod 444 ${1}
+    		chmod 444 "${1}"
     	fi
     }
 
 	certificates_check_certificates() {
 		print_debug "Certificates: Checking Existence of ${1}"
-		if [ ! -f ${1} ] ; then
-			    mkdir -p `dirname ${1}`
-			    certificates_create_certificate ${1}
+		if [ ! -f "${1}" ] ; then
+			    mkdir -p "$(dirname "${1}")"
+			    certificates_create_certificate "${1}"
 		fi
 	}
 
@@ -157,16 +157,16 @@ EOF
 
     certificates_create_dhparam() {
 		print_notice "Certificates: DH Param - Creating ${TLS_SERVER_DH_PARAM_FILE}"
-		mkdir -p `dirname ${TLS_SERVER_DH_PARAM_FILE}`
-		silent openssl dhparam -out ${TLS_SERVER_DH_PARAM_FILE} ${TLS_SERVER_DH_PARAM_KEYSIZE}
+		mkdir -p "$(dirname "${TLS_SERVER_DH_PARAM_FILE}")"
+		silent openssl dhparam -out "${TLS_SERVER_DH_PARAM_FILE}" "${TLS_SERVER_DH_PARAM_KEYSIZE}"
     }
 
 	certificates_trust_ca() {
-		if var_true $CREATE_CA ; then
-			if [ -f ${CA_CERT_FILE} ]; then
-				if [ ! -L /usr/local/share/ca-certificates/`basename ${CA_CERT_FILE}` ] ; then
+		if var_true "$CREATE_CA" ; then
+			if [ -f "${CA_CERT_FILE}" ]; then
+				if [ ! -f /usr/local/share/ca-certificates/"$(basename "${CA_CERT_FILE}")" ] ; then
 					print_debug "Certificates: Trusting CA ${CA_NAME}"
-					ln -sf ${CA_CERT_FILE} /usr/local/share/ca-certificates/
+					ln -sf "${CA_CERT_FILE}" /usr/local/share/ca-certificates/
 					silent update-ca-certificates
 				fi
 			fi
@@ -174,12 +174,12 @@ EOF
 	}
 
 	case "$1" in
-	" DHPARAM" | "dhparam" )
+	"DHPARAM" | "dhparam" )
         certificates_check_dhparam
     ;;
 	*)
-		certificates_check_certificates ${1}
-		certificates_check_permissions ${1}
+		certificates_check_certificates "${1}"
+		certificates_check_permissions "${1}"
 		certificates_trust_ca
 	;;
 	esac
@@ -188,13 +188,13 @@ EOF
 configure_data_dir() {
 	### Set Permissions
 	print_debug "Configuring Postfix Data Location"
-	mkdir -p ${DATA_LOCATION}		
-	chmod 700 ${DATA_LOCATION}
-	chown postfix:postfix ${DATA_LOCATION}
-	mkdir -p ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
-	chown -R postfix:root ${DATA_LOCATION}{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
-	chown -R postfix:postdrop ${DATA_LOCATION}{maildrop,public}
-	chown -R root:postfix ${DATA_LOCATION}pid
+	mkdir -p "${DATA_LOCATION}"
+	chmod 700 "${DATA_LOCATION}"
+	chown postfix:postfix "${DATA_LOCATION}"
+	mkdir -p "${DATA_LOCATION}"{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
+	chown -R postfix:root "${DATA_LOCATION}"{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+	chown -R postfix:postdrop "${DATA_LOCATION}"{maildrop,public}
+	chown -R root:postfix "${DATA_LOCATION}"pid
 }
 
 configure_ldap() {
@@ -221,7 +221,7 @@ EOF
 		cat <<EOF > /etc/postfix/ldap-users.cf
 ## Custom Generated LDAP USers Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(date)
 
 server_host=${LDAP_HOST}
 server_port=${LDAP_PORT}
@@ -238,7 +238,7 @@ EOF
 		cat <<EOF > /etc/postfix/ldap-aliases.cf
 ## Custom Generated LDAP Aliases Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(date)
 
 server_host=${LDAP_HOST}
 server_port=${LDAP_PORT}
@@ -251,20 +251,57 @@ query_filter=${LDAP_FILTER_ALIAS}
 result_attribute=${LDAP_ATTRIBUTE_ALIAS}
 EOF
 	fi
+
+		### Setup LDAP Groups
+		cat <<EOF > /etc/postfix/ldap-groups.cf
+## Custom Generated LDAP Groups Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on $(date)
+
+server_host=${LDAP_HOST}
+server_port=${LDAP_PORT}
+search_base=${LDAP_BASE_DN}
+timeout=${LDAP_TIMEOUT}
+version=${LDAP_VERSION}
+${ldap_bind}
+scope=${LDAP_SCOPE_GROUPS}
+query_filter=${LDAP_FILTER_GROUPS}
+result_attribute=${LDAP_ATTRIBUTE_GROUPS}
+EOF
+	fi
+
+		### Setup LDAP Aliases
+		cat <<EOF > /etc/postfix/ldap-groups-expand.cf
+## Custom Generated LDAP Aliases Configuration! Do not edit, instead set ENV Vars
+## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
+## Last Generated on $(date)
+
+server_host=${LDAP_HOST}
+server_port=${LDAP_PORT}
+search_base=${LDAP_BASE_DN}
+timeout=${LDAP_TIMEOUT}
+version=${LDAP_VERSION}
+${ldap_bind}
+scope=${LDAP_SCOPE_GROUPS_EXPAND}
+query_filter=${LDAP_FILTER_GROUPS_EXPAND}
+result_attribute=${LDAP_ATTRIBUTE_GROUPS_EXPAND}
+EOF
+	fi
+
 }
 
 configure_postfix_main() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
 	    print_notice "Configuring Postfix Main"
-		
-	    if var_true ${ENABLE_RELAY_HOST}; then
+
+	    if var_true "${ENABLE_RELAY_HOST}"; then
             sanity_var RELAY_HOST
-			if [ -z ${RELAY_USER} ] || [ -z ${RELAY_PASS} ] ; then
+			if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
 				RELAY_ENABLE_AUTH="no"
 			else
 				RELAY_ENABLE_AUTH="yes"
 			fi
-    
+
             truefalse_yesno RELAY_ENABLE_TLS
 
 			smtp_relay=$(cat <<EOF
@@ -278,7 +315,7 @@ EOF
 						)
 		fi
 
-	    if var_true $ENABLE_RSPAM; then
+	    if var_true "$ENABLE_RSPAM"; then
 	    	print_debug "Enabling RSPAM Settings"
 			rspam_settings=$(cat <<EOF
 # spam filter and DKIM signatures via rspamd
@@ -302,7 +339,7 @@ EOF
 		cat <<EOF > /etc/postfix/main.cf
 ## Custom Generated Postfix Main Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(date)
 
 compatibility_level     = ${COMPATIBILITY_LEVEL}
 mail_owner              = postfix
@@ -328,9 +365,9 @@ ${smtp_relay}
 # virtual maps
 virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
 virtual_mailbox_maps    = ldap:/etc/postfix/ldap-users.cf
-virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf
+virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf, ldap:/etc/postfix/ldap-groups.cf, ldap:/etc/postfix/ldap-groups-expand.cf
 virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
- 
+
 # prevent leaking valid e-mail addresses
 disable_vrfy_command    = ${DISABLE_VRFY_COMMAND}
 
@@ -361,14 +398,14 @@ smtpd_tls_session_cache_database        = btree:${DATA_LOCATION}smtpd_scache
 smtpd_tls_mandatory_exclude_ciphers     = ${TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS}
 smtpd_tls_mandatory_protocols           = ${TLS_SERVER_MANDATORY_PROTOCOLS}
 smtpd_tls_protocols                     = ${TLS_SERVER_PROTOCOLS}
- 
+
 # TLS encryption - client
 smtp_tls_security_level         = ${TLS_CLIENT_SECURITY_LEVEL}
 smtp_tls_loglevel               = ${LOG_LEVEL_TLS_CLIENT}
 smtp_tls_mandatory_ciphers      = ${TLS_CLIENT_MANDATORY_CIPHERS}
 smtp_tls_mandatory_protocols    = ${TLS_CLIENT_MANDATORY_PROTOCOLS}
 smtp_tls_session_cache_database = btree:${DATA_LOCATION}smtp_scache
- 
+
 ### Before-220 tests
 postscreen_dnsbl_reply_map      = pcre:/etc/postfix/postscreen_dnsbl_reply_map.pcre
 postscreen_blacklist_action     = drop
@@ -386,7 +423,7 @@ postscreen_dnsbl_sites =
         psbl.surriel.com
         swl.spamhaus.org*-4
 postscreen_whitelist_interfaces = \$mynetworks, static:all
- 
+
 ${rspam_settings}
 
 # check incoming mail for 'stuff'
@@ -398,28 +435,28 @@ smtpd_recipient_restrictions =
         reject_unauth_destination,
         reject_unauth_pipelining,
         reject_invalid_hostname
- 
+
 smtpd_data_restrictions =
         reject_unauth_pipelining
- 
+
 # client restrictions
 smtpd_client_restrictions =
         permit_mynetworks,
         permit_auth_destination,
         permit_sasl_authenticated,
- 
+
 # anybody out there?
 smtpd_helo_restrictions =
         permit_mynetworks,
         reject_invalid_hostname
- 
+
 # who may send
 smtpd_sender_restrictions =
         permit_mynetworks,
         permit_sasl_authenticated,
         check_sender_access hash:${DATA_LOCATION}sender_domain_checks,
         reject_unknown_sender_domain,
- 
+
 # mail reject codes
 unknown_address_reject_code             = 550
 unknown_client_reject_code              = 550
@@ -428,27 +465,27 @@ unknown_local_recipient_reject_code     = 550
 unknown_relay_recipient_reject_code     = 554
 unknown_virtual_alias_reject_code       = 550
 unknown_virtual_mailbox_reject_code     = 550
- 
+
 # deferred mail intervals
- 
+
 queue_run_delay                 = ${QUEUE_DELAY}
 # How often the queue manager scans the queue for deferred mail.
- 
+
 # The minimal amount of time a message won't be looked at, and the minimal amount of time to stay away from a "dead" destination.
 minimal_backoff_time            = ${BACKOFF_TIME_MIN}
- 
+
 # The maximal amount of time a message won't be looked at after a delivery failure.
 maximal_backoff_time            = ${BACKOFF_TIME_MAX}
- 
+
 # How long a message stays in the queue before it is sent back as undeliverable. Specify 0 for mail that should be returned immediately after the first unsuccessful delivery attempt.
 maximal_queue_lifetime          = ${LIFETIME_QUEUE_MAX}
- 
+
 # How long a MAILER-DAEMON message stays in the queue before it is considered undeliverable. Specify 0 for mail that should be tried only once.
 bounce_queue_lifetime           = ${LIFETIME_QUEUE_BOUNCE}
- 
+
 # The size of many in-memory queue manager data structures. Among others, this parameter limits the size of the short-term, in-memory list of "dead" destinations. Destinations that don't fit the list are not added.
 qmgr_message_recipient_limit    = ${LIMIT_MESSAGE_RECIPIENTS}
- 
+
 # mail size
 message_size_limit              = ${LIMIT_MESSAGE_SIZE}
 EOF
@@ -461,14 +498,14 @@ configure_postfix_postscreen() {
 		cat <<EOF > /etc/postfix/postscreen_dnsbl_reply_map.pcre
 ## Custom Generated Postscreen DNSBL Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(date)
 
 # We will be rejecting much mail which is listed in multiple DNSBLs.
 # We're not proud of some of the lists we are using, thus have given
 # them lower scores in postscreen_dnsbl_sites listing. So this checks
 # the DNSBL name postscreen(8) gets from dnsblog(8), and if it's not
 # one of our Tier 1 DNSBL sites, it changes what the sender will see:
- 
+
 !/^zen\\.spamhaus\\.org\$/         multiple DNS-based blocklists
 EOF
 	fi
@@ -480,7 +517,7 @@ configure_postfix_master() {
 		cat <<EOF > /etc/postfix/master.cf
 ## Custom Generated Postfix Master Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(date)
 
 # ==========================================================================
 # service type  private unpriv  chroot  wakeup  maxproc command + args
@@ -588,20 +625,20 @@ EOF
 }
 
 configure_relay_host() {
-	if var_true $ENABLE_RELAY_HOST ; then
+	if var_true "$ENABLE_RELAY_HOST" ; then
 		if [ "$SETUP_TYPE" = "AUTO" ]; then
 		    print_notice "Configuring SASL Outgoing Password"
-			if [ -z ${RELAY_USER} ] || [ -z ${RELAY_PASS} ] ; then
+			if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
 				:
 			else
 				relayuserpass="${RELAY_USER}:${RELAY_PASS}"
-			fi			
-			
+			fi
+
 			cat <<EOF > /etc/postfix/sasl_passwd
 ## Custom Generated SASL Relay Outgoing Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
-		
+## Last Generated on $(date)
+
 ${RELAY_HOST}:${RELAY_PORT} ${relayuserpass}
 EOF
 
@@ -610,24 +647,24 @@ EOF
 	fi
 }
 lmtp_ready() {
-    if var_true ${ENABLE_LMTP}; then
+    if var_true "${ENABLE_LMTP}"; then
 	    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
 	    COUNTER=0
-	    while ! (silent nc -z ${LMTP_HOST} ${LMTP_PORT}) ; do
+	    while ! (silent nc -z "${LMTP_HOST}" "${LMTP_PORT}") ; do
 	        sleep 5
-	        let COUNTER+=5
+	        (( COUNTER+=5))
 	        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
 	    done
 	fi
 }
 
 rspam_ready() {
-    if var_true ${ENABLE_RSPAMD}; then
+    if var_true "${ENABLE_RSPAMD}"; then
     	print_debug "Checking to see if RSpam Host: ${RSPAM_HOST} is accessible"
     	COUNTER=0
-    	while ! (silent nc -z ${RSPAM_HOST} ${RSPAM_PORT}) ; do
+    	while ! (silent nc -z "${RSPAM_HOST}" "${RSPAM_PORT}") ; do
         	sleep 5
-        	let COUNTER+=5
+        	(( COUNTER+=5))
         	print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
     	done
     fi

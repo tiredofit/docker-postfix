@@ -9,14 +9,14 @@ configure_logging() {
         else
                 sed -i "s#<LOG_LOCATION>#${LOG_LOCATION}#g" /etc/logrotate.d/postfix
 	fi
-	
+
 	touch ${LOG_LOCATION}${LOG_FILE}
 	chown postfix:postfix ${LOG_LOCATION}${LOG_FILE}
 
 	cat <<EOF > /etc/rsyslog.conf
 
 ## Custom Generated rsyslog Configuration! Do not edit, instead set ENV Vars
-## Last Generated on `date`
+## Last Generated on $(date)
 
 \$WorkDirectory /var/lib/rsyslog
 \$FileOwner postfix

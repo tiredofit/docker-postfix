@@ -1,3 +1,9 @@
+## 0.9.0 2020-06-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add LDAP Group and Group Exploding Support
+
+
 ## 0.8.1 2020-06-22 <dave at tiredofit dot ca>
 
    ### Changed
