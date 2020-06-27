@@ -265,6 +265,7 @@ version=${LDAP_VERSION}
 ${ldap_bind}
 scope=${LDAP_SCOPE_GROUPS}
 query_filter=${LDAP_FILTER_GROUPS}
+special_result_attribute=${LDAP_ATTRIBUTE_GROUPS_SPECIAL}
 result_attribute=${LDAP_ATTRIBUTE_GROUPS}
 EOF
 

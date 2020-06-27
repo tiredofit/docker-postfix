@@ -1,3 +1,9 @@
+## 0.9.1 2020-06-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Working Group Expansion
+
+
 ## 0.9.0 2020-06-27 <dave at tiredofit dot ca>
 
    ### Added
