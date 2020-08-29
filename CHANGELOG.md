@@ -1,3 +1,9 @@
+## 0.9.2 2020-08-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Added inotify support to reload Postfix when certificates change (Letsencrypt renew process)
+
+
 ## 0.9.1 2020-06-27 <dave at tiredofit dot ca>
 
    ### Changed

@@ -1,0 +1,13 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service 10-postfix
+PROCESS_NAME="postfix-config-reload"
+
+if var_true "${RELOAD_ON_CERT_CHANGE}" ; then
+	print_notice "Enabling Auto Reload of Postfix Configuration when certificate files change"
+else
+	service_stop 11-postfix-config-reload
+fi
+
+liftoff

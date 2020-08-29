@@ -1,0 +1,15 @@
+#!/usr/bin/with-contenv bash
+
+source /assets/functions/00-container
+prepare_service defaults 10-postfix
+PROCESS_NAME="postfix-config-reload"
+
+check_container_initialized
+check_service_initialized init
+liftoff
+
+while inotifywait -q -e create,delete,modify,attrib ${TLS_SERVER_CERT_FILE} ${TLS_SERVER_KEY_FILE}
+  print_info "Reloading postfix configuration do to a detected certificate change"
+  postfix reload
+  exit 0
+done

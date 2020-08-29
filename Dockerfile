@@ -27,6 +27,7 @@ RUN set -x && \
     apk add -t .postfix-run-deps \
                 fail2ban \
                 heimdal-libs \
+                inotify-tools \
                 libldap \
                 openssl \
                 pflogsumm \
