@@ -1,3 +1,9 @@
+## 0.9.3 2020-08-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Relay Mechanism Filter environment variable
+
+
 ## 0.9.2 2020-08-29 <dave at tiredofit dot ca>
 
    ### Added
