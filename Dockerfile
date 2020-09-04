@@ -29,7 +29,7 @@ RUN set -x && \
                 heimdal-libs \
                 inotify-tools \
                 libldap \
-                openldap-clients && \
+                openldap-clients \
                 openssl \
                 pflogsumm \
                 postfix \
