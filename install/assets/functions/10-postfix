@@ -292,6 +292,15 @@ configure_postfix_main() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
 	    print_notice "Configuring Postfix Main"
 
+	    if var_true "${ENABLE_TRANPORT_MAP}"; then
+			sanity_var ${TRANSPORT_MAP}
+			virtual_transport_map=", hash:${DATA_LOCATION}${TRANSPORT_MAP}"
+			transport_map=$(cat <<EOF
+transport_maps = hash:${DATA_LOCATION}${TRANSPORT_MAP}
+EOF
+							)
+		fi
+
 	    if var_true "${ENABLE_RELAY_HOST}"; then
             sanity_var RELAY_HOST
 			if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
@@ -363,9 +372,10 @@ ${smtp_relay}
 
 # virtual maps
 virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
-virtual_mailbox_maps    = ldap:/etc/postfix/ldap-users.cf
+virtual_mailbox_maps    = ldap:/etc/postfix/ldap-users.cf${virtual_transport_map}
 virtual_alias_maps      = ldap:/etc/postfix/ldap-aliases.cf, ldap:/etc/postfix/ldap-groups.cf, ldap:/etc/postfix/ldap-groups-expand.cf
 virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
+${transport_map}
 
 # prevent leaking valid e-mail addresses
 disable_vrfy_command    = ${DISABLE_VRFY_COMMAND}

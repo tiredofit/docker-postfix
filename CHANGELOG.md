@@ -1,3 +1,9 @@
+## 0.9.4 2020-09-04 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add TRANSPORT_MAP functionality to route to external SMTP services
+
+
 ## 0.9.3 2020-08-30 <dave at tiredofit dot ca>
 
    ### Added

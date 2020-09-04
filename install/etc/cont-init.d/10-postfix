@@ -26,6 +26,15 @@ postmap "${DATA_LOCATION}"sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 
+if var_true ${ENABLE_TRANSPORT_MAP} ; then
+    if [ ! -f ${DATA_LOCATION}${TRANSPORT_MAP} ]; then
+        touch ${DATA_LOCATION}${TRANSPORT_MAP}
+    fi
+    if ! -f ${DATA_LOCATION}${TRANSPORT_MAP}.db ] ; then
+        postmap ${DATA_LOCATION}${TRANSPORT_MAP}
+    fi
+fi
+
 ### Execute Custom Scripts if exist to modify parts of the system
 if [ -d /assets/custom-scripts/ ] ; then
   print_warn "Found Custom Scripts to Execute"
