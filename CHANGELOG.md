@@ -1,3 +1,12 @@
+## 0.9.5 2020-09-05 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add SMTPD sender and HELO restrictions
+
+   ### Changed
+      - Change fail2ban backend to AUTO
+
+
 ## 0.9.4 2020-09-04 <dave at tiredofit dot ca>
 
    ### Added

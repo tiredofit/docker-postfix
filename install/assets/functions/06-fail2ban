@@ -36,12 +36,12 @@ fail2ban_create_config_jail() {
 		cat <<EOF > ${FAIL2BAN_CONFIG_PATH}jail.conf
 ## Custom Generated Fail2ban jail.conf Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`	
+## Last Generated on `date`
 
 [DEFAULT]
 ignorself = ${FAIL2BAN_IGNORE_SELF}
 ignoreip = ${FAIL2BAN_IGNORE_IP}
-ignorecommand = 
+ignorecommand =
 bantime  = ${FAIL2BAN_TIME_BAN}
 findtime  = ${FAIL2BAN_TIME_FIND}
 maxretry = ${FAIL2BAN_MAX_RETRY}
@@ -98,16 +98,16 @@ fail2ban_create_config_main(){
 		cat <<EOF > ${FAIL2BAN_CONFIG_PATH}fail2ban.conf
 ## Custom Generated fail2ban.conf Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`	
-		
+## Last Generated on `date`
+
 [Definition]
 loglevel = ${FAIL2BAN_LOG_LEVEL}
-logtarget = ${FAIL2BAN_LOG_FILE} 
+logtarget = ${FAIL2BAN_LOG_FILE}
 syslogsocket = auto
 socket = /var/run/fail2ban/fail2ban.sock
 pidfile = /var/run/fail2ban/fail2ban.pid
 # Values: [ None :memory: FILE ] Default: /var/lib/fail2ban/fail2ban.sqlite3
-dbfile = ${FAIL2BAN_DB_PATH}${FAIL2BAN_DB_FILE} 
+dbfile = ${FAIL2BAN_DB_PATH}${FAIL2BAN_DB_FILE}
 dbpurgeage = ${FAIL2BAN_DB_PURGE_AGE}
 EOF
 	fi
@@ -126,21 +126,21 @@ fail2ban_jail_create() {
 		print_debug "Fail2Ban: Adding Jail - Postfix"
 		cat <<EOF >> ${FAIL2BAN_CONFIG_PATH}jail.local
 [postfix]
-enabled = false
+enabled = true
 mode    = more
 port    = smtp,465,submission
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = %(default_backend)s
+backend = auto
 
 EOF
 		print_debug "Fail2Ban: Adding Jail - Postfix (RBL)"
 		cat <<EOF >> ${FAIL2BAN_CONFIG_PATH}jail.local
 [postfix-rbl]
-enabled  = false
+enabled  = true
 filter   = postfix[mode=rbl]
 port     = smtp,465,submission
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = %(default_backend)s
+backend = auto
 maxretry = 1
 
 EOF
@@ -148,14 +148,14 @@ EOF
 		print_debug "Fail2Ban: Adding Jail - SASL"
 		cat <<EOF >> ${FAIL2BAN_CONFIG_PATH}jail.local
 [postfix-sasl]
-
+enabled=true
 filter   = postfix[mode=auth]
 port     = smtp,465,submission,imap,imaps,pop3,pop3s
 # You might consider monitoring /var/log/mail.warn instead if you are
 # running postfix since it would provide the same log lines at the
 # "warn" level but overall at the smaller filesize.
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = %(default_backend)s
+backend = auto
 
 EOF
 	fi
@@ -163,11 +163,11 @@ EOF
 
 fail2ban_jail_purge() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
-	    print_debug "Fail2Ban: Purging Jails from Previous Run"	
-	    cat <<EOF > ${FAIL2BAN_CONFIG_PATH}jail.local	    
+	    print_debug "Fail2Ban: Purging Jails from Previous Run"
+	    cat <<EOF > ${FAIL2BAN_CONFIG_PATH}jail.local
 ## Custom Generated Fail2ban jail.local Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`	
+## Last Generated on `date`
 EOF
 	fi
 }

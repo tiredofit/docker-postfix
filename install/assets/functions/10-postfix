@@ -336,6 +336,30 @@ EOF
 						)
 		fi
 
+		if var_true "${SMTPD_REJECT_MISSING_PTR}" ; then
+			smtpd_reject_missing_ptr=", reject_unknown_reverse_client_hostname"
+		fi
+
+		if var_true "${SMTPD_HELO_REQUIRED}" ; then
+			smtpd_helo_required="smtpd_helo_required = yes"
+		fi
+
+		if var_true "${SMTPD_HELO_REJECT_MALFORMED_HOSTNAME}" ; then
+			smtpd_helo_reject_malformed_hostname=", reject_invalid_helo_hostname"
+		fi
+
+		if var_true "${SMTPD_HELO_REJECT_NON_FQDN_HOSTNAME}" ; then
+			smtpd_helo_reject_non_fqdn_hostname=", reject_non_fqdn_helo_hostname"
+		fi
+
+		if var_true "${SMTPD_HELO_REJECT_UNKNOWN_HOSTNAME}" ; then
+			smtpd_helo_reject_unknown_hostname=", reject_unknown_helo_hostname"
+		fi
+
+        if var_true "${SMTPD_REJECT_INVALID_A_RECORD}" ; then
+			smtpd_reject_invalid_a_record="reject_unknown_reverse_client_hostname, reject_unknown_client_hostname"
+		fi
+
 		truefalse_yesno APPEND_DOT_MYDOMAIN
 		truefalse_yesno BIFF
 		truefalse_yesno SASL_BROKEN_AUTH_CLIENTS
@@ -381,7 +405,7 @@ ${transport_map}
 disable_vrfy_command    = ${DISABLE_VRFY_COMMAND}
 
 # restrictions
-smtpd_restriction_classes = mua_sender_restrictions, mua_client_restrictions, mua_helo_restrictions
+smtpd_restriction_classes = mua_sender_restrictions, mua_client_restrictions, mua_helo_restrictions ${smtpd_reject_missing_ptr}
 mua_client_restrictions = permit_sasl_authenticated, reject
 mua_sender_restrictions = permit_sasl_authenticated, reject
 mua_helo_restrictions = permit_mynetworks, reject_non_fqdn_hostname, reject_invalid_hostname, permit
@@ -455,9 +479,7 @@ smtpd_client_restrictions =
         permit_sasl_authenticated,
 
 # anybody out there?
-smtpd_helo_restrictions =
-        permit_mynetworks,
-        reject_invalid_hostname
+smtpd_helo_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_invalid_hostname ${smtpd_helo_reject_malformed_hostname}${smtpd_helo_reject_non_fqdn_hostname}${smtpd_helo_reject_unknown_hostname}
 
 # who may send
 smtpd_sender_restrictions =
@@ -465,6 +487,7 @@ smtpd_sender_restrictions =
         permit_sasl_authenticated,
         check_sender_access hash:${DATA_LOCATION}sender_domain_checks,
         reject_unknown_sender_domain,
+		${smtpd_reject_invalid_a_record}
 
 # mail reject codes
 unknown_address_reject_code             = 550
