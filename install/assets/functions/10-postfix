@@ -337,7 +337,7 @@ EOF
 		fi
 
 		if var_true "${SMTPD_REJECT_MISSING_PTR}" ; then
-			smtpd_reject_missing_ptr=", reject_unknown_reverse_client_hostname"
+			smtpd_reject_missing_ptr="reject_unknown_reverse_client_hostname,"
 		fi
 
 		if var_true "${SMTPD_HELO_REQUIRED}" ; then
@@ -357,7 +357,7 @@ EOF
 		fi
 
         if var_true "${SMTPD_REJECT_INVALID_A_RECORD}" ; then
-			smtpd_reject_invalid_a_record="reject_unknown_reverse_client_hostname, reject_unknown_client_hostname"
+			smtpd_reject_invalid_a_record="reject_unknown_client_hostname,"
 		fi
 
 		truefalse_yesno APPEND_DOT_MYDOMAIN
@@ -405,7 +405,7 @@ ${transport_map}
 disable_vrfy_command    = ${DISABLE_VRFY_COMMAND}
 
 # restrictions
-smtpd_restriction_classes = mua_sender_restrictions, mua_client_restrictions, mua_helo_restrictions ${smtpd_reject_missing_ptr}
+smtpd_restriction_classes = mua_sender_restrictions, mua_client_restrictions, mua_helo_restrictions
 mua_client_restrictions = permit_sasl_authenticated, reject
 mua_sender_restrictions = permit_sasl_authenticated, reject
 mua_helo_restrictions = permit_mynetworks, reject_non_fqdn_hostname, reject_invalid_hostname, permit
@@ -487,6 +487,7 @@ smtpd_sender_restrictions =
         permit_sasl_authenticated,
         check_sender_access hash:${DATA_LOCATION}sender_domain_checks,
         reject_unknown_sender_domain,
+		${smtpd_reject_missing_ptr}
 		${smtpd_reject_invalid_a_record}
 
 # mail reject codes
