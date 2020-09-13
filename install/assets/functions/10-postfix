@@ -273,7 +273,7 @@ result_attribute=${LDAP_ATTRIBUTE_GROUPS}
 EOF
 
 		### Setup LDAP Groups Expansion
-		ldap_groups_expand_cf="ldap:/etc/postfix/ldap-groups_expand.cf"
+		ldap_groups_expand_cf="ldap:/etc/postfix/ldap-groups-expand.cf"
 		cat <<EOF > /etc/postfix/ldap-groups-expand.cf
 ## Custom Generated LDAP Groups Expansion Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
