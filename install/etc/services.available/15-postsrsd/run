@@ -1,0 +1,22 @@
+#!/usr/bin/with-contenv /bin/bash
+
+source /assets/functions/00-container
+prepare_service both all
+PROCESS_NAME="postsrsd"
+
+check_container_initialized
+liftoff
+
+print_info "Starting Postfix Sender Rewrite Daemon"
+silent exec /usr/sbin/postsrsd \
+                            -a "${POSTSRSD_SEPERATOR}" \
+                            -c "${POSTSRSD_CHROOT}" \
+                            -d "${POSTSRSD_DOMAIN}" \
+                            -f "${POSTSRSD_FORWARD_PORT}" \
+                            -l "${POSTSRSD_LISTEN_HOST}" \
+                            -N "${POSTSRSD_HASHMIN}" \
+                            -n "${POSTSRSD_HASHLEGNTH}" \
+                            -r "${POSTSRSD_REVERSE_PORT}" \
+                            -s "${DATA_LOCATION}${POSTSRSD_SECRET}" \
+                            -u nobody \
+                            -X ${POSTSRSD_EXCLUDE_DOMAINS}

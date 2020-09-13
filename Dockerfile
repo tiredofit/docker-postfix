@@ -3,6 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ## Set Defaults
 ENV CYRUS_SASL_VERSION=2.1.27 \
+    POSTSRSD_VERSION=1.6 \
     ENABLE_SMTP=FALSE \
     ZABBIX_HOSTNAME=postfix-app
 
@@ -24,6 +25,10 @@ RUN set -x && \
                 openssl-dev \
                 && \
     \
+    apk add -t .postsrsd-build-deps \
+                cmake \
+                && \
+    \
     apk add -t .postfix-run-deps \
                 fail2ban \
                 heimdal-libs \
@@ -38,6 +43,23 @@ RUN set -x && \
                 postfix-ldap \
                 rsyslog \
                 && \
+    \
+    ## Build
+    git clone https://github.com/roehling/postsrsd /usr/src/postsrsd && \
+    cd /usr/src/postsrsd && \
+    git checkout ${POSTSRSD_VERSION} && \
+    mkdir build && \
+    cd build && \
+    mkdir -p /etc/postsrsd && \
+    cmake .. -DGENERATE_SRS_SECRET=OFF \
+             -DCONFIG_DIR="/etc/postsrsd" \
+             -DDOC_DIR="/usr/src/postsrsd/doc" \
+             -DCMAKE_INSTALL_PREFIX=/usr \
+             -DINIT_FLAVOR=none \
+             && \
+    make && \
+    make install && \
+    mv /etc/postsrsd/ /assets/postsrsd && \
     \
     ## Build Cyrus SASLD
     git clone -b cyrus-sasl-${CYRUS_SASL_VERSION} https://github.com/cyrusimap/cyrus-sasl/ /usr/src/cyrus-sasl && \
@@ -87,7 +109,7 @@ RUN set -x && \
     ## Cleanup
     cd /etc/fail2ban && \
     rm -rf fail2ban.conf fail2ban.d jail.conf jail.d paths-*.conf && \
-    apk del .cyrus-sasl-build-deps && \
+    apk del .cyrus-sasl-build-deps .postsrsd-build-deps && \
     rm -rf /usr/src/* && \
     rm -rf /var/cache/apk/*
 

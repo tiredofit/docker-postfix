@@ -1,3 +1,13 @@
+## 0.10.0 2020-09-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add PostSRSd support / Sender Rewriting
+
+   ### Changed
+      - Cleanup populating postfix configuration when LDAP disabled
+      - Code Cleanup
+
+
 ## 0.9.5 2020-09-05 <dave at tiredofit dot ca>
 
    ### Added
