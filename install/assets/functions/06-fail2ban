@@ -119,8 +119,6 @@ fail2ban_create_filters() {
 	fi
 }
 
-
-
 fail2ban_jail_create() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
 		print_debug "Fail2Ban: Adding Jail - Postfix"
@@ -130,7 +128,6 @@ enabled = true
 mode    = more
 port    = smtp,465,submission
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = auto
 
 EOF
 		print_debug "Fail2Ban: Adding Jail - Postfix (RBL)"
@@ -140,9 +137,7 @@ enabled  = true
 filter   = postfix[mode=rbl]
 port     = smtp,465,submission
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = auto
 maxretry = 1
-
 EOF
 
 		print_debug "Fail2Ban: Adding Jail - SASL"
@@ -155,7 +150,6 @@ port     = smtp,465,submission,imap,imaps,pop3,pop3s
 # running postfix since it would provide the same log lines at the
 # "warn" level but overall at the smaller filesize.
 logpath = ${LOG_LOCATION}${LOG_FILE}
-backend = auto
 
 EOF
 	fi
