@@ -30,7 +30,7 @@ if var_true ${ENABLE_TRANSPORT_MAP} ; then
     if [ ! -f ${DATA_LOCATION}${TRANSPORT_MAP} ]; then
         touch ${DATA_LOCATION}${TRANSPORT_MAP}
     fi
-    if ! -f ${DATA_LOCATION}${TRANSPORT_MAP}.db ] ; then
+    if [ ! -f ${DATA_LOCATION}${TRANSPORT_MAP}.db ] ; then
         postmap ${DATA_LOCATION}${TRANSPORT_MAP}
     fi
 fi
