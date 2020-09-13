@@ -293,7 +293,6 @@ configure_postfix_main() {
 	    print_notice "Configuring Postfix Main"
 
 	    if var_true "${ENABLE_TRANSPORT_MAP}"; then
-			sanity_var ${TRANSPORT_MAP}
 			virtual_transport_map=", hash:${DATA_LOCATION}${TRANSPORT_MAP}"
 			transport_map=$(cat <<EOF
 transport_maps = hash:${DATA_LOCATION}${TRANSPORT_MAP}
