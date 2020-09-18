@@ -442,7 +442,7 @@ smtpd_tls_received_header       = ${TLS_SERVER_RECEIVED_HEADER}
 smtpd_tls_session_cache_timeout = ${TLS_SERVER_SESSION_CACHE_TIMEOUT}
 tls_random_source               = dev:/dev/urandom
 smtpd_tls_dh1024_param_file     = ${TLS_SERVER_DH_PARAM_FILE}
-smtpd_tls_session_cache_database        = btree:${DATA_LOCATION}smtpd_scache
+smtpd_tls_session_cache_database        = lmdb:${DATA_LOCATION}smtpd_scache
 smtpd_tls_mandatory_exclude_ciphers     = ${TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS}
 smtpd_tls_mandatory_protocols           = ${TLS_SERVER_MANDATORY_PROTOCOLS}
 smtpd_tls_protocols                     = ${TLS_SERVER_PROTOCOLS}
@@ -452,7 +452,7 @@ smtp_tls_security_level         = ${TLS_CLIENT_SECURITY_LEVEL}
 smtp_tls_loglevel               = ${LOG_LEVEL_TLS_CLIENT}
 smtp_tls_mandatory_ciphers      = ${TLS_CLIENT_MANDATORY_CIPHERS}
 smtp_tls_mandatory_protocols    = ${TLS_CLIENT_MANDATORY_PROTOCOLS}
-smtp_tls_session_cache_database = btree:${DATA_LOCATION}smtp_scache
+smtp_tls_session_cache_database = lmdb:${DATA_LOCATION}smtp_scache
 
 ### Before-220 tests
 postscreen_dnsbl_reply_map      = pcre:/etc/postfix/postscreen_dnsbl_reply_map.pcre

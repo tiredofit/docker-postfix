@@ -1,3 +1,9 @@
+## 0.10.2 2020-09-17 <dave at tiredofit dot ca>
+
+   ### Added
+      - Further work on switching over to LMDB
+
+
 ## 0.10.1 2020-09-17 <dave at tiredofit dot ca>
 
    ### Added
