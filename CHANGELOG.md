@@ -1,3 +1,9 @@
+## 0.10.1 2020-09-17 <dave at tiredofit dot ca>
+
+   ### Added
+      - Switch to LMDB for databases instead of bdb due to AGPL shift
+
+
 ## 0.10.0 2020-09-13 <dave at tiredofit dot ca>
 
    ### Added

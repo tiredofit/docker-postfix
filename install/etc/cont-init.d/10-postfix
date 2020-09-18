@@ -22,7 +22,7 @@ rspam_ready
 
 postalias /etc/postfix/aliases
 touch "${DATA_LOCATION}"sender_domain_checks
-postmap "${DATA_LOCATION}"sender_domain_checks
+postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 
@@ -31,7 +31,7 @@ if var_true ${ENABLE_TRANSPORT_MAP} ; then
         touch ${DATA_LOCATION}${TRANSPORT_MAP}
     fi
     if [ ! -f ${DATA_LOCATION}${TRANSPORT_MAP}.db ] ; then
-        postmap ${DATA_LOCATION}${TRANSPORT_MAP}
+        postmap lmdb:${DATA_LOCATION}${TRANSPORT_MAP}
     fi
 fi
 
