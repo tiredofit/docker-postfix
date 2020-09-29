@@ -1,3 +1,9 @@
+## 0.10.3 2020-09-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Plus Addressing rewrite feature
+
+
 ## 0.10.2 2020-09-17 <dave at tiredofit dot ca>
 
    ### Added

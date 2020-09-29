@@ -296,6 +296,15 @@ configure_postfix_main() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
 	    print_notice "Configuring Postfix Main"
 
+	    if var_true "$ENABLE_PLUS_ADDRESSING"; then
+			print_debug "Enabling Plus Addressing Settings"
+			cat <<EOF > ${DATA_LOCATION}plusaddressrewrite
+/([^+]+)\+.*@(.+)/    \$1@\$2
+EOF
+			postmap ${DATA_LOCATION}plusaddressrewrite
+			plus_addressing=", regex:${DATA_LOCATION}plusaddressrewrite"
+		fi
+
 	    if var_true "${ENABLE_TRANSPORT_MAP}"; then
 			virtual_transport_map=", lmdb:${DATA_LOCATION}${TRANSPORT_MAP}"
 			transport_map=$(cat <<EOF
@@ -412,7 +421,7 @@ ${smtp_relay}
 # virtual maps
 virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
 virtual_mailbox_maps    = ${ldap_users_cf}${virtual_transport_map}
-virtual_alias_maps      = ${ldap_aliases_cf}${ldap_groups_cf}${ldap_groups_expand_cf}
+virtual_alias_maps      = ${ldap_aliases_cf}${ldap_groups_cf}${ldap_groups_expand_cf}${plus_addressing}
 virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
 ${transport_map}
 
