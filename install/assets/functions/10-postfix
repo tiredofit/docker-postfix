@@ -296,7 +296,7 @@ configure_postfix_main() {
 	if [ "$SETUP_TYPE" = "AUTO" ]; then
 	    print_notice "Configuring Postfix Main"
 
-        if [ ! -f ${DATA_LOCATION}bounce.cf ]; then
+        if [ ! -f ${DATA_LOCATION}${TEMPLATE_BOUNCE} ]; then
 			cat <<EOD
 #
 # The failure template is used when mail is returned to the sender;
@@ -405,7 +405,6 @@ EOF
 
 EOD
 		fi
-		ln -sf /etc/postfix/bounce.cf ${DATA_LOCATION}
 
 	    if var_true "$ENABLE_PLUS_ADDRESSING"; then
 			print_debug "Enabling Plus Addressing Settings"
@@ -515,6 +514,7 @@ smtpd_banner            = ${SMTPD_BANNER}
 sendmail_path           = /usr/sbin/sendmail
 newaliases_path         = /usr/bin/newaliases
 mailq_path              = /usr/bin/mailq
+bounce_template_file    = ${DATA_LOCATION}${TEMPLATE_BOUNCE}
 myhostname              = ${SERVER_NAME}
 biff                    = ${BIFF}
 append_dot_mydomain     = ${APPEND_DOT_MYDOMAIN}
