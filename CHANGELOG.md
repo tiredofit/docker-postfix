@@ -1,3 +1,12 @@
+## 0.10.4 2020-10-02 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add custom bounce message support by placing templates in data location
+
+   ### Changed
+      - Fix PostSRSd being disabled limiting postfix from starting
+
+
 ## 0.10.3 2020-09-29 <dave at tiredofit dot ca>
 
    ### Added
