@@ -470,6 +470,10 @@ EOF
 							)
 		fi
 
+        if [ -n "${ADDITIONAL_VIRTUAL_ALIAS_MAPS" ]; then
+			additional_virtual_alias_maps=", ${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
+		fi
+
 		if var_true "${SMTPD_REJECT_MISSING_PTR}" ; then
 			smtpd_reject_missing_ptr="reject_unknown_reverse_client_hostname,"
 		fi
@@ -532,7 +536,7 @@ ${smtp_relay}
 # virtual maps
 virtual_mailbox_domains = ${VIRTUAL_MAILBOX_DOMAINS}
 virtual_mailbox_maps    = ${ldap_users_cf}${virtual_transport_map}
-virtual_alias_maps      = ${ldap_aliases_cf}${ldap_groups_cf}${ldap_groups_expand_cf}${plus_addressing}
+virtual_alias_maps      = ${ldap_aliases_cf}${ldap_groups_cf}${ldap_groups_expand_cf}${plus_addressing}${additional_virtual_alias_maps}
 virtual_transport       = lmtp:${LMTP_HOST}:${LMTP_PORT}
 ${transport_map}
 
