@@ -470,7 +470,7 @@ EOF
 							)
 		fi
 
-        if [ -n "${ADDITIONAL_VIRTUAL_ALIAS_MAPS" ]; then
+        if [ -n "${ADDITIONAL_VIRTUAL_ALIAS_MAPS}" ]; then
 			additional_virtual_alias_maps=", ${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
 		fi
 
