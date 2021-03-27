@@ -1,3 +1,9 @@
+## 0.11.3 2021-03-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Force changing permissions reset on postfix/data directory before startup
+
+
 ## 0.11.2 2021-03-27 <dave at tiredofit dot ca>
 
    ### Changed

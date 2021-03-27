@@ -47,4 +47,6 @@ if [ -d /assets/custom-scripts/ ] ; then
   done
 fi
 
+chown -R postfix ${DATA_LOCATION}
+chown -R postfix /etc/postfix
 liftoff
