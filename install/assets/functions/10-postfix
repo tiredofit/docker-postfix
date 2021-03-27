@@ -297,7 +297,7 @@ configure_postfix_main() {
 	    print_notice "Configuring Postfix Main"
 
         if [ ! -f ${DATA_LOCATION}${TEMPLATE_BOUNCE} ]; then
-			cat <<EOD
+			cat <<EOD > ${DATA_LOCATION}${TEMPLATE_BOUNCE}
 #
 # The failure template is used when mail is returned to the sender;
 # either the destination rejected the message, or the destination

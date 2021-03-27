@@ -1,3 +1,12 @@
+## 0.11.1 2021-03-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - PostSRSD 1.11
+
+   ### Changed
+      - Fix for Bounce Message Templates not being written
+
+
 ## 0.11.0 2021-01-14 <dave at tiredofit dot ca>
 
    ### Changed

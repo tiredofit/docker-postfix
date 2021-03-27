@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ## Set Defaults
 ENV CYRUS_SASL_VERSION=2.1.27 \
-    POSTSRSD_VERSION=1.6 \
+    POSTSRSD_VERSION=1.11 \
     ENABLE_SMTP=FALSE \
     ZABBIX_HOSTNAME=postfix-app
 
