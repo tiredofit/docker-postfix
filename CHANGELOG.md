@@ -1,3 +1,9 @@
+## 0.11.4 2021-03-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change Cyrus SASL to use gdbm instead of bdb
+
+
 ## 0.11.3 2021-03-27 <dave at tiredofit dot ca>
 
    ### Added

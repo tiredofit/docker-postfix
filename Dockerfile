@@ -16,6 +16,7 @@ RUN set -x && \
                 automake \
                 build-base \
                 db-dev \
+                gdbm-dev \
                 git \
                 gzip \
                 groff \
@@ -23,6 +24,7 @@ RUN set -x && \
                 libtool \
                 openldap-dev \
                 openssl-dev \
+                sqlite-dev \
                 && \
     \
     apk add -t .postsrsd-build-deps \
@@ -91,7 +93,7 @@ RUN set -x && \
         --enable-shared \
         --enable-static \
         --with-configdir=/etc/sasl2 \
-        --with-dblib=berkeley \
+        --with-dblib=gdbm \
         --with-dbpath=/etc/sasl2/sasldb2 \
         --with-devrandom=/dev/urandom \
         --with-gss_impl=heimdal \
