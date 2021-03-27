@@ -3,7 +3,7 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ## Set Defaults
 ENV CYRUS_SASL_VERSION=2.1.27 \
-    POSTSRSD_VERSION=1.6 \
+    POSTSRSD_VERSION=1.11 \
     ENABLE_SMTP=FALSE \
     ZABBIX_HOSTNAME=postfix-app
 
@@ -16,6 +16,7 @@ RUN set -x && \
                 automake \
                 build-base \
                 db-dev \
+                gdbm-dev \
                 git \
                 gzip \
                 groff \
@@ -23,6 +24,7 @@ RUN set -x && \
                 libtool \
                 openldap-dev \
                 openssl-dev \
+                sqlite-dev \
                 && \
     \
     apk add -t .postsrsd-build-deps \
@@ -39,7 +41,6 @@ RUN set -x && \
                 pflogsumm \
                 postfix \
                 postfix-pcre \
-                postfix-lmdb \
                 postfix-ldap \
                 rsyslog \
                 && \
@@ -92,7 +93,7 @@ RUN set -x && \
         --enable-shared \
         --enable-static \
         --with-configdir=/etc/sasl2 \
-        --with-dblib=berkeley \
+        --with-dblib=gdbm \
         --with-dbpath=/etc/sasl2/sasldb2 \
         --with-devrandom=/dev/urandom \
         --with-gss_impl=heimdal \
@@ -105,6 +106,7 @@ RUN set -x && \
     \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
+    mkdir -p /etc/sasl2/sasldb2 && \
     \
     ## Cleanup
     cd /etc/fail2ban && \

@@ -1,6 +1,5 @@
 # hub.docker.com/r/tiredofit/postfix
 
-[![Build Status](https://img.shields.io/docker/build/tiredofit/postfix.svg)](https://hub.docker.com/r/tiredofit/postfix)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/postfix.svg)](https://hub.docker.com/r/tiredofit/postfix)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/postfix.svg)](https://hub.docker.com/r/tiredofit/postfix)
 [![Docker Layers](https://images.microbadger.com/badges/image/tiredofit/postfix.svg)](https://microbadger.com/images/tiredofit/postfix)

@@ -1,3 +1,16 @@
+## 0.12.0 2021-03-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - PostSRSD 1.11
+      - Force changing permissions reset on postfix/data directory before startup
+
+   ### Changed
+      - Change Cyrus SASL to use gdbm instead of bdb
+      - Fix for Cyrus SASLD not authenticating
+      - Remove postfix-lmdb package as it is set by default
+      - Fix for Bounce Messages not being rewritten
+
+
 ## 0.11.0 2021-01-14 <dave at tiredofit dot ca>
 
    ### Changed
