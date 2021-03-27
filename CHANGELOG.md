@@ -1,3 +1,9 @@
+## 0.11.2 2021-03-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remove postfix-lmdb package as it is set by default
+
+
 ## 0.11.1 2021-03-27 <dave at tiredofit dot ca>
 
    ### Added

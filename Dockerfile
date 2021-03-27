@@ -39,7 +39,6 @@ RUN set -x && \
                 pflogsumm \
                 postfix \
                 postfix-pcre \
-                postfix-lmdb \
                 postfix-ldap \
                 rsyslog \
                 && \
