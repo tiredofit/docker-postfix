@@ -411,7 +411,7 @@ EOD
 			cat <<EOF > ${DATA_LOCATION}plusaddressrewrite
 /([^+]+)\+.*@(.+)/    \$1@\$2
 EOF
-			postmap ${DATA_LOCATION}plusaddressrewrite
+			sudo -u postfix postmap ${DATA_LOCATION}plusaddressrewrite
 			plus_addressing=", regexp:${DATA_LOCATION}plusaddressrewrite"
 		fi
 
@@ -831,7 +831,7 @@ configure_relay_host() {
 ${RELAY_HOST}:${RELAY_PORT} ${relayuserpass}
 EOF
 
-			postmap lmdb:/etc/postfix/sasl_passwd
+			sudo -u postfix postmap lmdb:/etc/postfix/sasl_passwd
 		fi
 	fi
 }

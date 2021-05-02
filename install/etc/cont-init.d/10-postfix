@@ -49,6 +49,5 @@ fi
 
 chown -R postfix:postfix ${DATA_LOCATION}/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
 chown -R postfix:postdrop ${DATA_LOCATION}/{maildrop,public}
-chown postfix:postfix ${DATA_LOCATION}/*.db
-chown postfix:postfix ${DATA_LOCATION}/*.lmdb
+chown postfix:postfix ${DATA_LOCATION}/*.*
 liftoff
