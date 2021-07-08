@@ -1,3 +1,12 @@
+## 0.12.2 2021-07-08 <dave at tiredofit dot ca>
+
+   ### Added
+      - Alpine 3.14 base
+
+   ### Changed
+      - Disable sender rewrite daemon default
+
+
 ## 0.12.0 2021-03-27 <dave at tiredofit dot ca>
 
    ### Added

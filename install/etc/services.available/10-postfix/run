@@ -8,5 +8,5 @@ check_container_initialized
 check_service_initialized init
 liftoff
 
-print_info "Starting postfix"
+print_start "Starting postfix"
 exec /usr/sbin/postfix -c /etc/postfix start-fg

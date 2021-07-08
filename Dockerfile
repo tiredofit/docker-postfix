@@ -1,5 +1,5 @@
-FROM tiredofit/alpine:3.13
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+FROM tiredofit/alpine:3.14
+LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Defaults
 ENV CYRUS_SASL_VERSION=2.1.27 \

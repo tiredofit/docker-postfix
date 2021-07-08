@@ -7,7 +7,7 @@ PROCESS_NAME="postsrsd"
 check_container_initialized
 liftoff
 
-print_info "Starting Postfix Sender Rewrite Daemon"
+print_start "Starting Postfix Sender Rewrite Daemon"
 silent exec /usr/sbin/postsrsd \
                             -a "${POSTSRSD_SEPERATOR}" \
                             -c "${POSTSRSD_CHROOT}" \

@@ -15,21 +15,31 @@ This is a work in progress and not stable for production use.
 
 ## Maintainer
 
-- [Dave Conroy](daveconroy@selfdesign.org)
+- [Dave Conroy](https://github.com/tiredofit)
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Authors](#authors)
+- [About](#about)
+- [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
-- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Quick Start](#quick-start)
+  - [Build from Source](#build-from-source)
+  - [Prebuilt Images](#prebuilt-images)
+    - [Multi Archictecture](#multi-archictecture)
 - [Configuration](#configuration)
-  - [Data-Volumes](#data-volumes)
+  - [Quick Start](#quick-start)
+  - [Persistent Storage](#persistent-storage)
   - [Environment Variables](#environment-variables)
+    - [Base Images used](#base-images-used)
+  - [Networking](#networking)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
+- [Support](#support)
+  - [Usage](#usage)
+  - [Bugfixes](#bugfixes)
+  - [Feature Requests](#feature-requests)
+  - [Updates](#updates)
+- [License](#license)
 - [References](#references)
 
 
@@ -43,7 +53,7 @@ Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tired
 ```bash
 docker pull tiredofit/postfix:(imagetag)
 ```
-The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
+The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
 | Container OS | Tag       |
 | ------------ | --------- |
