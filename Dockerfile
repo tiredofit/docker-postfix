@@ -67,10 +67,11 @@ RUN set -x && \
     cd /usr/src/cyrus-sasl && \
     wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/CVE-2019-19906.patch && \
     wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-as_needed.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-autotools_fixes.patch && \
+    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-autoconf-270.patch && \
     wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-avoid_pic_overwrite.patch && \
     wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-doc_build_fix.patch && \
     wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-gss_c_nt_hostbased_service.patch && \
+    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/fix-saslauthd-man-page.patch && \
     for patch in ./*.patch; do echo "** Applying $patch"; patch -p1 < $patch; done && \
     autoreconf -fiv && \
     ./configure \

@@ -1,3 +1,9 @@
+## 0.12.3 2021-07-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix Build issues with Cyrus-SASL
+
+
 ## 0.12.2 2021-07-08 <dave at tiredofit dot ca>
 
    ### Added
