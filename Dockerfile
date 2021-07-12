@@ -4,11 +4,13 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ## Set Defaults
 ENV CYRUS_SASL_VERSION=2.1.27 \
     POSTSRSD_VERSION=1.11 \
-    ENABLE_SMTP=FALSE \
+    CONTAINER_ENABLE_MESSAGING=FALSE \
     ZABBIX_HOSTNAME=postfix-app
 
 ## Dependencies Setup
 RUN set -x && \
+    addgroup -g 2525 postfix && \
+    adduser -S -D -H -h /var/spool/postfix -s /sbin/nologin -G postfix -u 2525 postfix && \
     apk update && \
     apk upgrade && \
     apk add -t .cyrus-sasl-build-deps \

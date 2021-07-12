@@ -1,3 +1,9 @@
+## 0.13.0 2021-07-12 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add postfix user and group before installation
+
+
 ## 0.12.3 2021-07-12 <dave at tiredofit dot ca>
 
    ### Changed
