@@ -1,3 +1,9 @@
+## 0.13.1 2021-07-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add support for additional Virtual mailbox maps
+
+
 ## 0.13.0 2021-07-12 <dave at tiredofit dot ca>
 
    ### Added
