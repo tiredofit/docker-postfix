@@ -1,3 +1,9 @@
+## 0.13.3 2021-07-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Disable Transport Map being on by default
+
+
 ## 0.13.2 2021-07-13 <dave at tiredofit dot ca>
 
    ### Added
