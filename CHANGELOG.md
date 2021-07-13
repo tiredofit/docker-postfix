@@ -1,3 +1,9 @@
+## 0.13.2 2021-07-13 <dave at tiredofit dot ca>
+
+   ### Added
+      - Always assume lmdb for additional mapping files
+
+
 ## 0.13.1 2021-07-13 <dave at tiredofit dot ca>
 
    ### Added

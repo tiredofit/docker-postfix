@@ -471,11 +471,11 @@ EOF
 		fi
 
         if [ -n "${ADDITIONAL_VIRTUAL_MAILBOX_MAPS}" ]; then
-			additional_virtual_mailbox_maps=", ${ADDITIONAL_VIRTUAL_MAILBOX_MAPS}"
+			additional_virtual_mailbox_maps=", lmdb:${DATA_LOCATION}/${ADDITIONAL_VIRTUAL_MAILBOX_MAPS}"
 		fi
 
         if [ -n "${ADDITIONAL_VIRTUAL_ALIAS_MAPS}" ]; then
-			additional_virtual_alias_maps=", ${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
+			additional_virtual_alias_maps=", lmdb:${DATA_LOCATION}/${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
 		fi
 
 		if var_true "${SMTPD_REJECT_MISSING_PTR}" ; then
