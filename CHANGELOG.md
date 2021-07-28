@@ -1,3 +1,9 @@
+## 0.13.4 2021-07-28 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change Postscreen settings to add more DNS checks and cache tweaks
+
+
 ## 0.13.3 2021-07-13 <dave at tiredofit dot ca>
 
    ### Added
