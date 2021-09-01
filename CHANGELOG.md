@@ -1,3 +1,10 @@
+## 0.13.5 2021-09-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way aliases are linked
+      - Modernize environment variables and cleanup a hacky Zabbix monitoring feature
+
+
 ## 0.13.4 2021-07-28 <dave at tiredofit dot ca>
 
    ### Changed

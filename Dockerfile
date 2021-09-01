@@ -5,7 +5,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ENV CYRUS_SASL_VERSION=2.1.27 \
     POSTSRSD_VERSION=1.11 \
     CONTAINER_ENABLE_MESSAGING=FALSE \
-    ZABBIX_HOSTNAME=postfix-app
+    CONTAINER_NAME=postfix-app
 
 ## Dependencies Setup
 RUN set -x && \
@@ -110,6 +110,7 @@ RUN set -x && \
     make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     mkdir -p /etc/sasl2/sasldb2 && \
+    ln -s /etc/postfix/aliases /etc/aliases && \
     \
     ## Cleanup
     cd /etc/fail2ban && \
