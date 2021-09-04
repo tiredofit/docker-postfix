@@ -2,16 +2,15 @@
 
 configure_logging() {
 	if [ "${LOG_TYPE}" = "CONSOLE" ] || [ "${LOG_TYPE}" = "console" ] ; then
-		print_notice "Setting Logging to Console"
-	        LOG_LOCATION="/dev/"
+			print_notice "Setting Logging to Console"
+	        LOG_PATH="/dev/"
        		LOG_FILE="console"
-		rm -rf /etc/logrotate.d/postfix
         else
-                sed -i "s#<LOG_LOCATION>#${LOG_LOCATION}#g" /etc/logrotate.d/postfix
+			create_logrotate postfix ${LOG_PATH/${LOG_FILE} none postfix postfix
 	fi
 
-	touch ${LOG_LOCATION}${LOG_FILE}
-	chown postfix:postfix ${LOG_LOCATION}${LOG_FILE}
+	touch ${LOG_PATH}${LOG_FILE}
+	chown postfix:postfix ${LOG_PATH}${LOG_FILE}
 
 	cat <<EOF > /etc/rsyslog.conf
 
@@ -29,7 +28,7 @@ configure_logging() {
 
 module(load="immark")
 module(load="imuxsock")
-mail.*							-${LOG_LOCATION}${LOG_FILE}
+mail.*							-${LOG_PATH}${LOG_FILE}
 
 EOF
 }

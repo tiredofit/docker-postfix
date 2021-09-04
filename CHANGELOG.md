@@ -1,3 +1,9 @@
+## 0.13.6 2021-09-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way logrotation is configured
+
+
 ## 0.13.5 2021-09-01 <dave at tiredofit dot ca>
 
    ### Changed

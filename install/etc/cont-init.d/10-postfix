@@ -10,7 +10,7 @@ if var_false "${CONTAINER_ENABLE_MONITORING}" ; then sed -i "/zabbix/d" /assets/
 certificates dhparam
 certificates "${TLS_SERVER_CERT_FILE}"
 configure_data_dir
-if var_true "$ENABLE_LDAP" ; then configure_ldap; fi;
+if var_true "${ENABLE_LDAP}" ; then configure_ldap; fi;
 configure_postfix_main
 configure_postfix_master
 configure_postfix_postscreen
