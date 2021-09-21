@@ -1,3 +1,9 @@
+## 0.13.8 2021-09-21 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Bugfix of 0.13.7
+
+
 ## 0.13.7 2021-09-21 <dave at tiredofit dot ca>
 
    ### Changed

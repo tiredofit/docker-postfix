@@ -2,4 +2,4 @@
 
 LOG_TYPE=${LOG_TYPE:-"FILE"}
 LOG_FILE=${LOG_FILE:-"postfix.log"}
-LOG_LOCATION=${LOG_LOCATION:-"/logs/"}
+LOG_PATH=${LOG_PATH:-"/logs/"}

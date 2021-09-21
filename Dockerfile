@@ -117,6 +117,7 @@ RUN set -x && \
     rm -rf fail2ban.conf fail2ban.d jail.conf jail.d paths-*.conf && \
     apk del .cyrus-sasl-build-deps .postsrsd-build-deps && \
     rm -rf /usr/src/* && \
+    rm -rf /etc/logrotate.d/rsyslog && \
     rm -rf /var/cache/apk/*
 
 ## Networking Configuration
