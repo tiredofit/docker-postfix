@@ -1,3 +1,9 @@
+## 0.13.7 2021-09-21 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Repair rsyslog
+
+
 ## 0.13.6 2021-09-04 <dave at tiredofit dot ca>
 
    ### Changed
