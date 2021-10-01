@@ -9,6 +9,7 @@ configure_logging() {
 		create_logrotate postfix ${LOG_PATH}/${LOG_FILE} none postfix postfix
 
 		touch ${LOG_PATH}${LOG_FILE}
+		chown postfix:postfix ${LOG_PATH}
 		chown postfix:postfix ${LOG_PATH}${LOG_FILE}
 
 		cat <<EOF > /etc/rsyslog.conf
