@@ -27,7 +27,7 @@ fail2ban_create_data_dir() {
 		print_debug "Fail2ban: Creating Log Directory"
 		mkdir -p ${FAIL2BAN_LOG_PATH}
 		touch ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE}
-        create_logroate fail2ban ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE} none
+        create_logrotate fail2ban ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE} none
 	fi
 }
 

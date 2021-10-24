@@ -1,3 +1,9 @@
+## 0.13.11 2021-10-24 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for 13.10
+
+
 ## 0.13.10 2021-10-24 <dave at tiredofit dot ca>
 
    ### Changed
