@@ -2,9 +2,8 @@
 
 fail2ban_configure_logging() {
 	print_debug "Fail2ban: Configure Logging"
-	mkdir -p $(dirname ${FAIL2BAN_LOG_FILE})
-	touch ${FAIL2BAN_LOG_FILE}
-	sed -i "s|<FAIL2BAN_LOG_LOCATION>|$(dirname ${FAIL2BAN_LOG_FILE})|g" /etc/logrotate.d/fail2ban
+	mkdir -p ${FAIL2BAN_LOG_PATH}
+	touch ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE}
 }
 
 fail2ban_create_data_dir() {
@@ -26,7 +25,9 @@ fail2ban_create_data_dir() {
 
 	if [ "$FAIL2BAN_LOG_TYPE" = "FILE" ] ; then
 		print_debug "Fail2ban: Creating Log Directory"
-		mkdir -p $(dirname ${FAIL2BAN_LOG_FILE})
+		mkdir -p ${FAIL2BAN_LOG_PATH}
+		touch ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE}
+        create_logroate fail2ban ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE} none
 	fi
 }
 
@@ -36,7 +37,7 @@ fail2ban_create_config_jail() {
 		cat <<EOF > ${FAIL2BAN_CONFIG_PATH}jail.conf
 ## Custom Generated Fail2ban jail.conf Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')
 
 [DEFAULT]
 ignorself = ${FAIL2BAN_IGNORE_SELF}
@@ -98,11 +99,11 @@ fail2ban_create_config_main(){
 		cat <<EOF > ${FAIL2BAN_CONFIG_PATH}fail2ban.conf
 ## Custom Generated fail2ban.conf Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')
 
 [Definition]
 loglevel = ${FAIL2BAN_LOG_LEVEL}
-logtarget = ${FAIL2BAN_LOG_FILE}
+logtarget = ${FAIL2BAN_LOG_PATH}/${FAIL2BAN_LOG_FILE}
 syslogsocket = auto
 socket = /var/run/fail2ban/fail2ban.sock
 pidfile = /var/run/fail2ban/fail2ban.pid
@@ -127,7 +128,7 @@ fail2ban_jail_create() {
 enabled = true
 mode    = more
 port    = smtp,465,submission
-logpath = ${LOG_LOCATION}${LOG_FILE}
+logpath = ${LOG_PATH}${LOG_FILE}
 
 EOF
 		print_debug "Fail2Ban: Adding Jail - Postfix (RBL)"
@@ -136,7 +137,7 @@ EOF
 enabled  = true
 filter   = postfix[mode=rbl]
 port     = smtp,465,submission
-logpath = ${LOG_LOCATION}${LOG_FILE}
+logpath = ${LOG_PATH}${LOG_FILE}
 maxretry = 1
 EOF
 
@@ -149,7 +150,7 @@ port     = smtp,465,submission,imap,imaps,pop3,pop3s
 # You might consider monitoring /var/log/mail.warn instead if you are
 # running postfix since it would provide the same log lines at the
 # "warn" level but overall at the smaller filesize.
-logpath = ${LOG_LOCATION}${LOG_FILE}
+logpath = ${LOG_PATH}${LOG_FILE}
 
 EOF
 	fi
@@ -161,7 +162,7 @@ fail2ban_jail_purge() {
 	    cat <<EOF > ${FAIL2BAN_CONFIG_PATH}jail.local
 ## Custom Generated Fail2ban jail.local Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
-## Last Generated on `date`
+## Last Generated on $(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')
 EOF
 	fi
 }

@@ -1,3 +1,9 @@
+## 0.13.10 2021-10-24 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fail2ban Logging change
+
+
 ## 0.13.9 2021-10-01 <dave at tiredofit dot ca>
 
    ### Changed
