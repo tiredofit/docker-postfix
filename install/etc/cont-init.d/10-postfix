@@ -20,6 +20,15 @@ configure_relay_host
 lmtp_ready
 rspam_ready
 
+if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+  source /assets/defaults/03-monitoring
+  cat <<EOF > "${ZABBIX_CONFIG_PATH}"/"${ZABBIX_CONFIG_FILE}.d"/tiredofit_postfix.conf
+# Zabbix Postfix Configuration - Automatically Generated
+# Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-postfix
+# Autoregister=postfix
+EOF
+fi
+
 postalias /etc/aliases
 touch "${DATA_LOCATION}"sender_domain_checks
 postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
