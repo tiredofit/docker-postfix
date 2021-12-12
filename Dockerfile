@@ -38,6 +38,7 @@ RUN set -x && \
                 heimdal-libs \
                 inotify-tools \
                 libldap \
+                logtail \
                 openldap-clients \
                 openssl \
                 pflogsumm \

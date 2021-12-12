@@ -1,3 +1,18 @@
+## 0.13.15 2021-12-10 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Rework of 0.13.14
+
+
+## 0.13.14 2021-12-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add logtail package
+
+   ### Changed
+      - Update Zabbix monitoring templates
+
+
 ## 0.13.13 2021-12-07 <dave at tiredofit dot ca>
 
    ### Added

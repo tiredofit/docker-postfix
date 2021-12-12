@@ -1,0 +1,1680 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2021-12-12T19:28:05Z",
+        "groups": [
+            {
+                "uuid": "c2239a92bde24f0a9f9173193cc2fe00",
+                "name": "SMTP"
+            },
+            {
+                "uuid": "a571c0d144b14fd4a87a9d9b2aa9fcd6",
+                "name": "Templates/Applications"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "8be5c65aa1db479bae5858f1beae4bef",
+                "template": "Postfix",
+                "name": "Postfix",
+                "description": "Postfix Active Agent monitoring \n\nMeant specifically for use with https://github.com/tiredofit/docker-postfix and https://github.com/tiredofit/docker-postfix-relay",
+                "groups": [
+                    {
+                        "name": "SMTP"
+                    },
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "a7a1369c011b49d38542a0e6dc3a3f66",
+                        "name": "Postfix: Bounced",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bounced",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bounced=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0491300e2b214188827d9bd897fdf876",
+                        "name": "Postfix: Bytes Delivered",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bytes_delivered",
+                        "delay": "0",
+                        "history": "1w",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bytes Delivered=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c8b35d32d4fa4141b5fa456a9cb96adf",
+                        "name": "Postfix: Bytes Received",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bytes_received",
+                        "delay": "0",
+                        "history": "1w",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bytes Received=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9a15d00167b6448c9cf6f764dc345a39",
+                        "name": "Postfix: Connections",
+                        "type": "DEPENDENT",
+                        "key": "postfix.connections",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Connections=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0b33f8954b0f4a7aa531c613e8e84cbc",
+                        "name": "Postfix: Deferred",
+                        "type": "DEPENDENT",
+                        "key": "postfix.deferred",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Deferred=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "43302c7423464d759adb5028807a4c20",
+                        "name": "Postfix: Delivered",
+                        "type": "DEPENDENT",
+                        "key": "postfix.delivered",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Delivered=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e3bad275f0ad4809966f6fcb376f4e53",
+                        "name": "Postfix: Discarded",
+                        "type": "DEPENDENT",
+                        "key": "postfix.discarded",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Discarded=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d2d2eabd400246498105bb477bfb5411",
+                        "name": "Postfix: Forwarded",
+                        "type": "DEPENDENT",
+                        "key": "postfix.forwarded",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Forwarded=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "50f098b19eb74d13afbe3f4f09c086de",
+                        "name": "Postfix: Get Statistics",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "postfix.get_statistics",
+                        "history": "1h",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "description": "Collect Postfix statistics using multiple methods via Agent.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "00a4cfe32cd04c6398720e46ed86f455",
+                        "name": "Postfix: Held",
+                        "type": "DEPENDENT",
+                        "key": "postfix.held",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Held=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0d2e7fb75ed4418d80cd736fa21d2fad",
+                        "name": "Postfix: Queue - Active",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.active",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Active=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "76b96f8e7f9440a8b39480f0fc8bb8db",
+                        "name": "Postfix: Queue - Deferred",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.deferred",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Deferred=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "253dcb56a5774cd0b12bb78bb619e37c",
+                        "name": "Postfix: Queue - Incoming",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.incoming",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Incoming=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ef0f52bfb143413b8506340bb3905c1c",
+                        "name": "Postfix: Queue - Mail",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.mail",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "2ca1c06f567d46cb9bcdc9ea0750d4c9",
+                                "expression": "last(/Postfix/postfix.queue.mail)>20",
+                                "name": "{HOST.NAME} - Postfix queue is over 20",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOST.NAME} - Postfix queue is over 50",
+                                        "expression": "last(/Postfix/postfix.queue.mail)>50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f7b3faf9afb04488a34019e31bdad54a",
+                                "expression": "last(/Postfix/postfix.queue.mail)>50",
+                                "name": "{HOST.NAME} - Postfix queue is over 50",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOST.NAME} - Postfix queue is over 200",
+                                        "expression": "last(/Postfix/postfix.queue.mail)>200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ab894755c38d452ab68491cc1f0b3971",
+                                "expression": "last(/Postfix/postfix.queue.mail)>200",
+                                "name": "{HOST.NAME} - Postfix queue is over 200",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9cd0cafaefb24c1ea57ada146e525725",
+                        "name": "Postfix: Queue - Maildrop maildrop queue",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.maildrop",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Maildrop=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "285bf792ca564a74a893c3ecca47251d",
+                        "name": "Postfix: Received",
+                        "type": "DEPENDENT",
+                        "key": "postfix.received",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Received=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e60e95bfd0694aceb040eb6ad8043d82",
+                        "name": "Postfix: Recipients",
+                        "type": "DEPENDENT",
+                        "key": "postfix.recipients",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Recipients=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "8a789f89c2e24870b9f09e52c0b98423",
+                        "name": "Postfix: Rejected",
+                        "type": "DEPENDENT",
+                        "key": "postfix.rejected",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Rejected=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b5cbd010d6bd46c1985c1109a3cd16b0",
+                        "name": "Postfix: Reject Warnings",
+                        "type": "DEPENDENT",
+                        "key": "postfix.reject_warnings",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Reject Warnings=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2328eff045a745a68ec1706cc9ffa325",
+                        "name": "Postfix: Senders",
+                        "type": "DEPENDENT",
+                        "key": "postfix.senders",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Senders=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "259e05a0cb124e589c8d653a89f4500f",
+                        "name": "Postfix: processes",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.num[,postfix]",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "1738fe521a2849f99c4e1da07beffc3d",
+                                "expression": "last(/Postfix/proc.num[,postfix],#1:now-10s)=0",
+                                "name": "{HOST.NAME} - Postfix is down",
+                                "priority": "HIGH"
+                            }
+                        ]
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "f322c26cb8b34ada97663f65cfd2cd02",
+                        "name": "Postfix",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "width": "24",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Mail Queue",
+                                                    "host": "Postfix"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "5",
+                                        "width": "24",
+                                        "height": "7",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Mail Counts",
+                                                    "host": "Postfix"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "12",
+                                        "width": "24",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Bytes",
+                                                    "host": "Postfix"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uuid": "1be5c65aa1db479bae5858f1beae4bef",
+                "template": "Postfix - Passive",
+                "name": "Postfix - Passive",
+                "description": "Postfix Passive Agent monitoring \n\nMeant specifically for use with https://github.com/tiredofit/docker-postfix and https://github.com/tiredofit/docker-postfix-relay",
+                "groups": [
+                    {
+                        "name": "SMTP"
+                    },
+                    {
+                        "name": "Templates/Applications"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "27a1369c011b49d38542a0e6dc3a3f66",
+                        "name": "Postfix: Bounced",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bounced",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bounced=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2491300e2b214188827d9bd897fdf876",
+                        "name": "Postfix: Bytes Delivered",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bytes_delivered",
+                        "delay": "0",
+                        "history": "1w",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bytes Delivered=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d8b35d32d4fa4141b5fa456a9cb96adf",
+                        "name": "Postfix: Bytes Received",
+                        "type": "DEPENDENT",
+                        "key": "postfix.bytes_received",
+                        "delay": "0",
+                        "history": "1w",
+                        "units": "B",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Bytes Received=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2a15d00167b6448c9cf6f764dc345a39",
+                        "name": "Postfix: Connections",
+                        "type": "DEPENDENT",
+                        "key": "postfix.connections",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Connections=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2b33f8954b0f4a7aa531c613e8e84cbc",
+                        "name": "Postfix: Deferred",
+                        "type": "DEPENDENT",
+                        "key": "postfix.deferred",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Deferred=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "23302c7423464d759adb5028807a4c20",
+                        "name": "Postfix: Delivered",
+                        "type": "DEPENDENT",
+                        "key": "postfix.delivered",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Delivered=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c3bad275f0ad4809966f6fcb376f4e53",
+                        "name": "Postfix: Discarded",
+                        "type": "DEPENDENT",
+                        "key": "postfix.discarded",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Discarded=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b2d2eabd400246498105bb477bfb5411",
+                        "name": "Postfix: Forwarded",
+                        "type": "DEPENDENT",
+                        "key": "postfix.forwarded",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Forwarded=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "20f098b19eb74d13afbe3f4f09c086de",
+                        "name": "Postfix: Get Statistics",
+                        "key": "postfix.get_statistics",
+                        "history": "1h",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "description": "Collect Postfix statistics using multiple methods via Agent.",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "10a4cfe32cd04c6398720e46ed86f455",
+                        "name": "Postfix: Held",
+                        "type": "DEPENDENT",
+                        "key": "postfix.held",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Held=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3d2e7fb75ed4418d80cd736fa21d2fad",
+                        "name": "Postfix: Queue - Active",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.active",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Active=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "46b96f8e7f9440a8b39480f0fc8bb8db",
+                        "name": "Postfix: Queue - Deferred",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.deferred",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Deferred=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "153dcb56a5774cd0b12bb78bb619e37c",
+                        "name": "Postfix: Queue - Incoming",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.incoming",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Incoming=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1f0f52bfb143413b8506340bb3905c1c",
+                        "name": "Postfix: Queue - Mail",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.mail",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "1ca1c06f567d46cb9bcdc9ea0750d4c9",
+                                "expression": "last(/Postfix - Passive/postfix.queue.mail)>20",
+                                "name": "{HOST.NAME} - Postfix queue is over 20",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOST.NAME} - Postfix queue is over 50",
+                                        "expression": "last(/Postfix - Passive/postfix.queue.mail)>50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "17b3faf9afb04488a34019e31bdad54a",
+                                "expression": "last(/Postfix - Passive/postfix.queue.mail)>50",
+                                "name": "{HOST.NAME} - Postfix queue is over 50",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOST.NAME} - Postfix queue is over 200",
+                                        "expression": "last(/Postfix - Passive/postfix.queue.mail)>200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "1b894755c38d452ab68491cc1f0b3971",
+                                "expression": "last(/Postfix - Passive/postfix.queue.mail)>200",
+                                "name": "{HOST.NAME} - Postfix queue is over 200",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2cd0cafaefb24c1ea57ada146e525725",
+                        "name": "Postfix: Queue - Maildrop maildrop queue",
+                        "type": "DEPENDENT",
+                        "key": "postfix.queue.maildrop",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Queue Maildrop=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "385bf792ca564a74a893c3ecca47251d",
+                        "name": "Postfix: Received",
+                        "type": "DEPENDENT",
+                        "key": "postfix.received",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Received=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f60e95bfd0694aceb040eb6ad8043d82",
+                        "name": "Postfix: Recipients",
+                        "type": "DEPENDENT",
+                        "key": "postfix.recipients",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Recipients=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2a789f89c2e24870b9f09e52c0b98423",
+                        "name": "Postfix: Rejected",
+                        "type": "DEPENDENT",
+                        "key": "postfix.rejected",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Rejected=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "25cbd010d6bd46c1985c1109a3cd16b0",
+                        "name": "Postfix: Reject Warnings",
+                        "type": "DEPENDENT",
+                        "key": "postfix.reject_warnings",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Reject Warnings=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1328eff045a745a68ec1706cc9ffa325",
+                        "name": "Postfix: Senders",
+                        "type": "DEPENDENT",
+                        "key": "postfix.senders",
+                        "delay": "0",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "REGEX",
+                                "parameters": [
+                                    "Stats Senders=([0-9]+)",
+                                    "\\1"
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "postfix.get_statistics"
+                        },
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Postfix"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "159e05a0cb124e589c8d653a89f4500f",
+                        "name": "Postfix: processes",
+                        "key": "proc.num[,postfix]",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix raw items"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "3738fe521a2849f99c4e1da07beffc3d",
+                                "expression": "last(/Postfix - Passive/proc.num[,postfix],#1:now-10s)=0",
+                                "name": "{HOST.NAME} - Postfix is down",
+                                "priority": "HIGH"
+                            }
+                        ]
+                    }
+                ],
+                "dashboards": [
+                    {
+                        "uuid": "e322c26cb8b34ada97663f65cfd2cd02",
+                        "name": "Postfix",
+                        "pages": [
+                            {
+                                "widgets": [
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "width": "24",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Mail Queue",
+                                                    "host": "Postfix - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "5",
+                                        "width": "24",
+                                        "height": "7",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Mail Counts",
+                                                    "host": "Postfix - Passive"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "GRAPH_CLASSIC",
+                                        "y": "12",
+                                        "width": "24",
+                                        "height": "5",
+                                        "fields": [
+                                            {
+                                                "type": "GRAPH",
+                                                "name": "graphid",
+                                                "value": {
+                                                    "name": "Postfix: Statistics - Bytes",
+                                                    "host": "Postfix - Passive"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "a84b56a47c574159b6ff9487622df997",
+                "name": "Postfix: Statistics - Bytes",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.bytes_delivered"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.bytes_received"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "b84b56a47c574159b6ff9487622df997",
+                "name": "Postfix: Statistics - Bytes",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.bytes_delivered"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.bytes_received"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "158ac9e3dcd74aacbe279cfacddcae00",
+                "name": "Postfix: Statistics - Mail Counts",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "00DDDD",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.connections"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "00EE00",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.delivered"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "EE0000",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.received"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "6666FF",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.rejected"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "969696",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.senders"
+                        }
+                    },
+                    {
+                        "sortorder": "6",
+                        "color": "960096",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.recipients"
+                        }
+                    },
+                    {
+                        "sortorder": "7",
+                        "color": "0000C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.bounced"
+                        }
+                    },
+                    {
+                        "sortorder": "8",
+                        "color": "C800C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.deferred"
+                        }
+                    },
+                    {
+                        "sortorder": "9",
+                        "color": "999900",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.discarded"
+                        }
+                    },
+                    {
+                        "sortorder": "10",
+                        "color": "C8C8C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.forwarded"
+                        }
+                    },
+                    {
+                        "sortorder": "11",
+                        "color": "960000",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.held"
+                        }
+                    },
+                    {
+                        "sortorder": "12",
+                        "color": "777700",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.reject_warnings"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "138ac9e3dcd74aacbe279cfacddcae00",
+                "name": "Postfix: Statistics - Mail Counts",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "00DDDD",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.connections"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "00EE00",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.delivered"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "EE0000",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.received"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "6666FF",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.rejected"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "969696",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.senders"
+                        }
+                    },
+                    {
+                        "sortorder": "6",
+                        "color": "960096",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.recipients"
+                        }
+                    },
+                    {
+                        "sortorder": "7",
+                        "color": "0000C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.bounced"
+                        }
+                    },
+                    {
+                        "sortorder": "8",
+                        "color": "C800C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.deferred"
+                        }
+                    },
+                    {
+                        "sortorder": "9",
+                        "color": "999900",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.discarded"
+                        }
+                    },
+                    {
+                        "sortorder": "10",
+                        "color": "C8C8C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.forwarded"
+                        }
+                    },
+                    {
+                        "sortorder": "11",
+                        "color": "960000",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.held"
+                        }
+                    },
+                    {
+                        "sortorder": "12",
+                        "color": "777700",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.reject_warnings"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "da35bea8311f43d39468503022e16b30",
+                "name": "Postfix: Statistics - Mail Queue",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "drawtype": "BOLD_LINE",
+                        "color": "00C8C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.queue.mail"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.queue.active"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.queue.deferred"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "0000C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.queue.incoming"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "C800C8",
+                        "item": {
+                            "host": "Postfix",
+                            "key": "postfix.queue.maildrop"
+                        }
+                    }
+                ]
+            },
+            {
+                "uuid": "db35bea8311f43d39468503022e16b30",
+                "name": "Postfix: Statistics - Mail Queue",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "drawtype": "BOLD_LINE",
+                        "color": "00C8C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.queue.mail"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.queue.active"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.queue.deferred"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "0000C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.queue.incoming"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "C800C8",
+                        "item": {
+                            "host": "Postfix - Passive",
+                            "key": "postfix.queue.maildrop"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
