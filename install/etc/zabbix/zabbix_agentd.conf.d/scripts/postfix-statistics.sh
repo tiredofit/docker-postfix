@@ -10,7 +10,7 @@ log_tmp="$(mktemp)"
 logtail -l "${LOG_PATH}"/"${LOG_FILE}" -o ${log_offset} | pflogsumm -h 0 -u 0 --smtpd-stats --bounce-detail=0 --deferral-detail=0 --reject-detail=0 --no-no-msg-size --smtpd-warning-detail=0 > ${log_tmp}
 
 echo "$(TZ=${TIMEZONE} date +'%Y-%m-%d %H:%M:%S %Z')                 Postfix Statistics"
-echo "Queue=$(mailq | grep -v "Mail queue is empty" | grep -c '^[0-9A-F]{10}]')"                                    # postfix.queue
+echo "Queue=$(mailq | grep -v "Mail queue is empty" | grep -c '^[0-9A-Z]')"                                         # postfix.queue
 echo "Queue Active=$(postqueue -p | grep -Ec "^[0-9A-F]{10}[*]")"                                                   # postfix.queue_active
 echo "Queue Deferred=$(postqueue -p | grep -Ec "^[0-9A-F]{10}[^*]")"                                                # postfix.queue_deferred
 echo "Queue Incoming=$(find ${DATA_LOCATION}/incoming -type f | wc -l)"                                             # postfix.queue_incoming
