@@ -1,3 +1,9 @@
+## 0.13.16 2021-12-16 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Switch to using a new Zabbix monitoring template
+
+
 ## 0.13.15 2021-12-10 <dave at tiredofit dot ca>
 
    ### Changed

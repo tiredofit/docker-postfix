@@ -16,6 +16,7 @@ if var_true ${ENABLE_FAIL2BAN} ; then
 else
     print_debug "Disabling Fail2Ban"
     service_stop 06-fail2ban
+	rm -rf /etc/zabbix/zabbix_agentd.conf.d/fail2ban.conf
 fi
 
 liftoff
