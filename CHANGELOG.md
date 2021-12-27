@@ -1,3 +1,9 @@
+## 0.13.17 2021-12-27 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Small tweak to Zabbix monitoring script
+
+
 ## 0.13.16 2021-12-16 <dave at tiredofit dot ca>
 
    ### Changed

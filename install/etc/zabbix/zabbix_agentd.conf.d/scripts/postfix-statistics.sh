@@ -1,5 +1,6 @@
 #!/usr/bin/with-contenv bash
 
+source /assets/functions/00-container
 source /assets/defaults/03-monitoring
 source /assets/defaults/09-rsyslog
 source /assets/defaults/10-postfix
