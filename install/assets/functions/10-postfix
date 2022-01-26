@@ -504,6 +504,7 @@ EOF
 
 		truefalse_yesno APPEND_DOT_MYDOMAIN
 		truefalse_yesno BIFF
+		truefalse_yesno CONFIRM_DELAY_CLEARED
 		truefalse_yesno SASL_BROKEN_AUTH_CLIENTS
 		truefalse_yesno DISABLE_VRFY_COMMAND
 		truefalse_yesno OWNER_REQUEST_SPECIAL
@@ -526,7 +527,7 @@ bounce_template_file    = ${DATA_LOCATION}${TEMPLATE_BOUNCE}
 myhostname              = ${SERVER_NAME}
 biff                    = ${BIFF}
 append_dot_mydomain     = ${APPEND_DOT_MYDOMAIN}
-mynetworks= ${ACCEPTED_NETWORKS}
+mynetworks				= ${ACCEPTED_NETWORKS}
 recipient_delimiter     = +
 owner_request_special   = ${OWNER_REQUEST_SPECIAL}
 inet_interfaces         = all
@@ -563,8 +564,8 @@ broken_sasl_auth_clients        = ${SASL_BROKEN_AUTH_CLIENTS}
 # TLS encryption - server
 smtpd_tls_security_level        = ${TLS_SERVER_SECURITY_LEVEL}
 smtpd_tls_auth_only             = ${TLS_SERVER_AUTH_ONLY}
-smtpd_tls_cert_file=${TLS_SERVER_CERT_FILE}
-smtpd_tls_key_file=${TLS_SERVER_KEY_FILE}
+smtpd_tls_cert_file				= ${TLS_SERVER_CERT_FILE}
+smtpd_tls_key_file				=${TLS_SERVER_KEY_FILE}
 smtpd_tls_loglevel              = ${LOG_LEVEL_TLS_SERVER}
 smtpd_tls_received_header       = ${TLS_SERVER_RECEIVED_HEADER}
 smtpd_tls_session_cache_timeout = ${TLS_SERVER_SESSION_CACHE_TIMEOUT}
@@ -669,6 +670,9 @@ unknown_relay_recipient_reject_code     = 554
 unknown_virtual_alias_reject_code       = 550
 unknown_virtual_mailbox_reject_code     = 550
 
+
+confirm_delay_cleared           = ${CONFIRM_DELAY_CLEARED}
+
 # deferred mail intervals
 
 queue_run_delay                 = ${QUEUE_DELAY}
@@ -676,6 +680,9 @@ queue_run_delay                 = ${QUEUE_DELAY}
 
 # The minimal amount of time a message won't be looked at, and the minimal amount of time to stay away from a "dead" destination.
 minimal_backoff_time            = ${BACKOFF_TIME_MIN}
+
+# The time after which the sender receives a copy of the message mheaders of mail that is still queued
+delay_warning_time              = ${DELAY_WARNING_TIME}
 
 # The maximal amount of time a message won't be looked at after a delivery failure.
 maximal_backoff_time            = ${BACKOFF_TIME_MAX}

@@ -1,3 +1,9 @@
+## 0.14.0 2022-01-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change Default Settings for Queue Delivery and add Delay Warning time
+
+
 ## 0.13.17 2021-12-27 <dave at tiredofit dot ca>
 
    ### Changed
