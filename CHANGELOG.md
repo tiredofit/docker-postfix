@@ -1,3 +1,9 @@
+## 0.14.1 2022-01-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ENABLE_THREADED_BOUNCES (default TRUE)
+
+
 ## 0.14.0 2022-01-25 <dave at tiredofit dot ca>
 
    ### Changed

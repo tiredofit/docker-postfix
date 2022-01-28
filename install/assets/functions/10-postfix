@@ -505,12 +505,14 @@ EOF
 		truefalse_yesno APPEND_DOT_MYDOMAIN
 		truefalse_yesno BIFF
 		truefalse_yesno CONFIRM_DELAY_CLEARED
+		truefalse_yesno ENABLE_THREADED_BOUNCES
 		truefalse_yesno SASL_BROKEN_AUTH_CLIENTS
 		truefalse_yesno DISABLE_VRFY_COMMAND
 		truefalse_yesno OWNER_REQUEST_SPECIAL
 		truefalse_yesno SASL_AUTH_ENABLE
 		truefalse_yesno TLS_SERVER_AUTH_ONLY
 		truefalse_yesno TLS_SERVER_RECEIVED_HEADER
+
 		cat <<EOF > /etc/postfix/main.cf
 ## Custom Generated Postfix Main Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
@@ -670,8 +672,9 @@ unknown_relay_recipient_reject_code     = 554
 unknown_virtual_alias_reject_code       = 550
 unknown_virtual_mailbox_reject_code     = 550
 
-
+## bounce
 confirm_delay_cleared           = ${CONFIRM_DELAY_CLEARED}
+enable_threaded_bounces         = ${ENABLE_THREADED_BOUNCES}
 
 # deferred mail intervals
 
