@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/command/with-contenv bash
 
 ACCEPTED_NETWORKS=${ACCEPTED_NETWORKS:-"127.0.0.0/8 [::1]/128 172.16.0.0/12"}
 APPEND_DOT_MYDOMAIN=${APPEND_DOT_MYDOMAIN:-"FALSE"}

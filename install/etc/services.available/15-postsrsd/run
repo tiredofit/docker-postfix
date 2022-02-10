@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv /bin/bash
+#!/command/with-contenv /bin/bash
 
 source /assets/functions/00-container
 prepare_service both all
