@@ -5,7 +5,8 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ENV CYRUS_SASL_VERSION=2.1.27 \
     POSTSRSD_VERSION=1.11 \
     CONTAINER_ENABLE_MESSAGING=FALSE \
-    CONTAINER_NAME=postfix-app
+    IMAGE_NAME="tiredofit/postfix" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-postfix/"
 
 ## Dependencies Setup
 RUN set -x && \
