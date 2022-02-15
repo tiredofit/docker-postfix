@@ -1,3 +1,9 @@
+## 0.14.4 2022-02-15 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for sudo command not working with Alpine base
+
+
 ## 0.14.3 2022-02-09 <dave at tiredofit dot ca>
 
    ### Changed
