@@ -2,7 +2,7 @@ FROM docker.io/tiredofit/alpine:3.16
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ## Set Defaults
-ENV CYRUS_SASL_VERSION=2.1.27 \
+ENV CYRUS_SASL_VERSION=2.1.28 \
     POSTSRSD_VERSION=1.11 \
     CONTAINER_ENABLE_MESSAGING=FALSE \
     IMAGE_NAME="tiredofit/postfix" \
@@ -69,14 +69,6 @@ RUN set -x && \
     ## Build Cyrus SASLD
     git clone -b cyrus-sasl-${CYRUS_SASL_VERSION} https://github.com/cyrusimap/cyrus-sasl/ /usr/src/cyrus-sasl && \
     cd /usr/src/cyrus-sasl && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/CVE-2019-19906.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-as_needed.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-avoid_pic_overwrite.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-doc_build_fix.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/cyrus-sasl-2.1.27-gss_c_nt_hostbased_service.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/autoconf-270.patch && \
-    wget https://git.alpinelinux.org/aports/plain/main/cyrus-sasl/fix-saslauthd-man-page.patch && \
-    for patch in ./*.patch; do echo "** Applying $patch"; patch -p1 < $patch; done && \
     autoreconf -fiv && \
     ./configure \
         --prefix=/usr \
