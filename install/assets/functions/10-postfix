@@ -198,7 +198,7 @@ configure_data_dir() {
 }
 
 configure_ldap() {
-	if [ "${SETUP_TYPE,,} = "auto" ] ; then
+	if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 		print_notice "Configuring LDAP Connectivity"
 		sanity_var LDAP_HOST "LDAP Host"
 		sanity_var LDAP_BASE_DN "LDAP Base DN"
@@ -293,11 +293,11 @@ EOF
 }
 
 configure_postfix_main() {
-	if [ "${SETUP_TYPE,,} = "auto" ] ; then
+	if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 	    print_notice "Configuring Postfix Main"
 
-        if [ ! -f ${DATA_LOCATION}${TEMPLATE_BOUNCE} ]; then
-			cat <<EOD > ${DATA_LOCATION}${TEMPLATE_BOUNCE}
+        if [ ! -f "${DATA_LOCATION}"${TEMPLATE_BOUNCE} ]; then
+			cat <<EOD > "${DATA_LOCATION}"${TEMPLATE_BOUNCE}
 #
 # The failure template is used when mail is returned to the sender;
 # either the destination rejected the message, or the destination
@@ -408,17 +408,17 @@ EOD
 
 	    if var_true "${ENABLE_PLUS_ADDRESSING}"; then
 			print_debug "Enabling Plus Addressing Settings"
-			cat <<EOF > ${DATA_LOCATION}plusaddressrewrite
+			cat <<EOF > "${DATA_LOCATION}"/plusaddressrewrite
 /([^+]+)\+.*@(.+)/    \$1@\$2
 EOF
-			sudo -u postfix postmap ${DATA_LOCATION}plusaddressrewrite
+			sudo -u postfix postmap "${DATA_LOCATION}"/plusaddressrewrite
 			plus_addressing=", regexp:${DATA_LOCATION}plusaddressrewrite"
 		fi
 
 	    if var_true "${ENABLE_TRANSPORT_MAP}"; then
-			virtual_transport_map=", lmdb:${DATA_LOCATION}${TRANSPORT_MAP}"
+			virtual_transport_map=", lmdb:${DATA_LOCATION}/${TRANSPORT_MAP}"
 			transport_map=$(cat <<EOF
-transport_maps = lmdb:${DATA_LOCATION}${TRANSPORT_MAP}
+transport_maps = lmdb:"${DATA_LOCATION}"${TRANSPORT_MAP}
 EOF
 							)
 		fi
@@ -525,7 +525,7 @@ smtpd_banner            = ${SMTPD_BANNER}
 sendmail_path           = /usr/sbin/sendmail
 newaliases_path         = /usr/bin/newaliases
 mailq_path              = /usr/bin/mailq
-bounce_template_file    = ${DATA_LOCATION}${TEMPLATE_BOUNCE}
+bounce_template_file    = "${DATA_LOCATION}"${TEMPLATE_BOUNCE}
 myhostname              = ${SERVER_NAME}
 biff                    = ${BIFF}
 append_dot_mydomain     = ${APPEND_DOT_MYDOMAIN}
@@ -706,7 +706,7 @@ EOF
 }
 
 configure_postfix_postscreen() {
-	if [ "${SETUP_TYPE,,} = "auto" ] ; then
+	if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 	    print_notice "Configuring Postfix - Postscreen"
 		cat <<EOF > /etc/postfix/postscreen_dnsbl_reply_map.pcre
 ## Custom Generated Postscreen DNSBL Configuration! Do not edit, instead set ENV Vars
@@ -725,7 +725,7 @@ EOF
 }
 
 configure_postfix_master() {
-	if [ "${SETUP_TYPE,,} = "auto" ] ; then
+	if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 	    print_notice "Configuring Postfix - Master"
 		cat <<EOF > /etc/postfix/master.cf
 ## Custom Generated Postfix Master Configuration! Do not edit, instead set ENV Vars
@@ -806,7 +806,7 @@ EOF
 }
 
 configure_postfix_sasl() {
-	if [ "${SETUP_TYPE,,} = "auto" ] ; then
+	if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 	    print_notice "Configuring SASL SMTPD"
 		case "${SASL_AUTH_TYPE,,}" in
 			"ldap" )
@@ -839,11 +839,11 @@ EOF
 
 configure_postsrsd() {
 	if var_true "${ENABLE_SENDER_REWRITE_SCHEME}" ; then
-		if [ "${SETUP_TYPE,,} = "auto" ] ; then
+		if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 	    	print_notice "Configuring PostSRSd"
-			if [ ! -f "${DATA_LOCATION}${POSTSRSD_SECRET}" ]; then
+			if [ ! -f "${DATA_LOCATION}"/"${POSTSRSD_SECRET}" ]; then
 				print_debug "Generating Random Keys"
-				cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 5 > ${DATA_LOCATION}${POSTSRSD_SECRET}
+				cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 18 | head -n 5 > "${DATA_LOCATION}"/"${POSTSRSD_SECRET}"
 			fi
 		fi
 	else
@@ -854,7 +854,7 @@ configure_postsrsd() {
 
 configure_relay_host() {
 	if var_true "${ENABLE_RELAY_HOST}" ; then
-		if [ "${SETUP_TYPE,,} = "auto" ] ; then
+		if [ "${SETUP_TYPE,,}" = "auto" ] ; then
 		    print_notice "Configuring SASL Outgoing Password"
 			if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
 				:
@@ -877,11 +877,11 @@ EOF
 lmtp_ready() {
     if var_true "${ENABLE_LMTP}"; then
 	    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
-	    COUNTER=0
+	    counter=0
 	    while ! (silent nc -z "${LMTP_HOST}" "${LMTP_PORT}") ; do
 	        sleep 5
-	        (( COUNTER+=5))
-	        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+	        (( counter+=5))
+	        print_warn "LMTP Host '${LMTP_HOST}' is not accessible, retrying.. ($counter seconds so far)"
 	    done
 	fi
 }
@@ -889,11 +889,11 @@ lmtp_ready() {
 rspam_ready() {
     if var_true "${ENABLE_RSPAMD}"; then
     	print_debug "Checking to see if RSpam Host: ${RSPAM_HOST} is accessible"
-    	COUNTER=0
+    	counter=0
     	while ! (silent nc -z "${RSPAM_HOST}" "${RSPAM_PORT}") ; do
         	sleep 5
-        	(( COUNTER+=5))
-        	print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($COUNTER seconds so far)"
+        	(( counter+=5))
+        	print_warn "RSpam Host '${RSPAM_HOST}' is not accessible, retrying.. ($counter seconds so far)"
     	done
     fi
 }

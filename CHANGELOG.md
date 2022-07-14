@@ -1,3 +1,9 @@
+## 0.15.3 2022-07-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Code cleanup with quotes
+
+
 ## 0.15.2 2022-07-14 <dave at tiredofit dot ca>
 
    ### Changed
