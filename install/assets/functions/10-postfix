@@ -1,11 +1,11 @@
 #!/command/with-contenv bash
 
-case "${SASL_AUTH_TYPE}" in
-	"LDAP" | "ldap" )
+case "${SASL_AUTH_TYPE,,}" in
+	"ldap" )
         sasl_auth_type="ldap"
         sasl_mech_options="/etc/sasl2/smtpd.conf"
     ;;
-	"IMAP" | "imap" )
+	"imap" )
 		sasl_auth_type="rimap"
 		sasl_mech_options="${SASL_AUTH_IMAP_HOST}"
 	;;
@@ -198,7 +198,7 @@ configure_data_dir() {
 }
 
 configure_ldap() {
-	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if [ "${SETUP_TYPE,,} = "auto" ] ; then
 		print_notice "Configuring LDAP Connectivity"
 		sanity_var LDAP_HOST "LDAP Host"
 		sanity_var LDAP_BASE_DN "LDAP Base DN"
@@ -269,31 +269,31 @@ ${ldap_bind}
 scope=${LDAP_SCOPE_GROUPS}
 query_filter=${LDAP_FILTER_GROUPS}
 special_result_attribute=${LDAP_ATTRIBUTE_GROUPS_SPECIAL}
-result_attribute=${LDAP_ATTRIBUTE_GROUPS}
+leaf_result_attribute=${LDAP_ATTRIBUTE_GROUPS}
 EOF
 
-		### Setup LDAP Groups Expansion
-		ldap_groups_expand_cf="ldap:/etc/postfix/ldap-groups-expand.cf"
-		cat <<EOF > /etc/postfix/ldap-groups-expand.cf
+#		### Setup LDAP Groups Expansion
+#		ldap_groups_expand_cf="ldap:/etc/postfix/ldap-groups-expand.cf"
+#		cat <<EOF > /etc/postfix/ldap-groups-expand.cf
 ## Custom Generated LDAP Groups Expansion Configuration! Do not edit, instead set ENV Vars
 ## If you want to use your own configuration files set SETUP_TYPE=MANUAL when starting container
 ## Last Generated on $(date)
-
-server_host=${LDAP_HOST}
-server_port=${LDAP_PORT}
-search_base=${LDAP_BASE_DN}
-timeout=${LDAP_TIMEOUT}
-version=${LDAP_VERSION}
-${ldap_bind}
-scope=${LDAP_SCOPE_GROUPS_EXPAND}
-query_filter=${LDAP_FILTER_GROUPS_EXPAND}
-result_attribute=${LDAP_ATTRIBUTE_GROUPS_EXPAND}
-EOF
+#
+#server_host=${LDAP_HOST}
+#server_port=${LDAP_PORT}
+#search_base=${LDAP_BASE_DN}
+#timeout=${LDAP_TIMEOUT}
+#version=${LDAP_VERSION}
+#${ldap_bind}
+#scope=${LDAP_SCOPE_GROUPS_EXPAND}
+#query_filter=${LDAP_FILTER_GROUPS_EXPAND}
+#result_attribute=${LDAP_ATTRIBUTE_GROUPS_EXPAND}
+#EOF
 	fi
 }
 
 configure_postfix_main() {
-	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if [ "${SETUP_TYPE,,} = "auto" ] ; then
 	    print_notice "Configuring Postfix Main"
 
         if [ ! -f ${DATA_LOCATION}${TEMPLATE_BOUNCE} ]; then
@@ -406,7 +406,7 @@ EOF
 EOD
 		fi
 
-	    if var_true "$ENABLE_PLUS_ADDRESSING"; then
+	    if var_true "${ENABLE_PLUS_ADDRESSING}"; then
 			print_debug "Enabling Plus Addressing Settings"
 			cat <<EOF > ${DATA_LOCATION}plusaddressrewrite
 /([^+]+)\+.*@(.+)/    \$1@\$2
@@ -445,7 +445,7 @@ EOF
 						)
 		fi
 
-	    if var_true "$ENABLE_RSPAM"; then
+	    if var_true "${ENABLE_RSPAM}"; then
 	    	print_debug "Enabling RSPAM Settings"
 			rspam_settings=$(cat <<EOF
 # spam filter and DKIM signatures via rspamd
@@ -706,7 +706,7 @@ EOF
 }
 
 configure_postfix_postscreen() {
-	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if [ "${SETUP_TYPE,,} = "auto" ] ; then
 	    print_notice "Configuring Postfix - Postscreen"
 		cat <<EOF > /etc/postfix/postscreen_dnsbl_reply_map.pcre
 ## Custom Generated Postscreen DNSBL Configuration! Do not edit, instead set ENV Vars
@@ -725,7 +725,7 @@ EOF
 }
 
 configure_postfix_master() {
-	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if [ "${SETUP_TYPE,,} = "auto" ] ; then
 	    print_notice "Configuring Postfix - Master"
 		cat <<EOF > /etc/postfix/master.cf
 ## Custom Generated Postfix Master Configuration! Do not edit, instead set ENV Vars
@@ -806,10 +806,10 @@ EOF
 }
 
 configure_postfix_sasl() {
-	if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if [ "${SETUP_TYPE,,} = "auto" ] ; then
 	    print_notice "Configuring SASL SMTPD"
-		case "${SASL_AUTH_TYPE}" in
-			"LDAP" | "ldap" )
+		case "${SASL_AUTH_TYPE,,}" in
+			"ldap" )
 				print_debug "SASL: Configuring for LDAP"
 				cat <<EOF > /etc/sasl2/smtpd.conf
 pwcheck_method: saslauthd
@@ -826,7 +826,7 @@ ldap_search_base: ${LDAP_SEARCH_DN}
 ldap_auth_method: bind
 EOF
 		    ;;
-			"IMAP" | "imap" )
+			"imap" )
 				print_debug "SASL: Configuring for IMAP"
 				cat <<EOF >/etc/sasl2/smtpd.conf
 pwcheck_method: saslauthd
@@ -838,8 +838,8 @@ EOF
 }
 
 configure_postsrsd() {
-	if var_true "$ENABLE_SENDER_REWRITE_SCHEME" ; then
-		if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if var_true "${ENABLE_SENDER_REWRITE_SCHEME}" ; then
+		if [ "${SETUP_TYPE,,} = "auto" ] ; then
 	    	print_notice "Configuring PostSRSd"
 			if [ ! -f "${DATA_LOCATION}${POSTSRSD_SECRET}" ]; then
 				print_debug "Generating Random Keys"
@@ -853,8 +853,8 @@ configure_postsrsd() {
 }
 
 configure_relay_host() {
-	if var_true "$ENABLE_RELAY_HOST" ; then
-		if [ "$SETUP_TYPE" = "AUTO" ]; then
+	if var_true "${ENABLE_RELAY_HOST}" ; then
+		if [ "${SETUP_TYPE,,} = "auto" ] ; then
 		    print_notice "Configuring SASL Outgoing Password"
 			if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
 				:

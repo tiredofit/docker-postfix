@@ -1,3 +1,9 @@
+## 0.15.1 2022-07-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Switch to leaf_result_attribute for ldap-groups and drop the groups expansion
+
+
 ## 0.15.0 2022-05-24 <dave at tiredofit dot ca>
 
    ### Added
