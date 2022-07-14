@@ -1,3 +1,9 @@
+## 0.15.2 2022-07-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for setup type variable
+
+
 ## 0.15.1 2022-07-14 <dave at tiredofit dot ca>
 
    ### Changed
