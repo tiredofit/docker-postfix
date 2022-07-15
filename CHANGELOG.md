@@ -1,3 +1,9 @@
+## 0.15.4 2022-07-14 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Data Location
+
+
 ## 0.15.3 2022-07-14 <dave at tiredofit dot ca>
 
    ### Changed
