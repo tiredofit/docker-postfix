@@ -1,3 +1,9 @@
+## 0.15.5 2022-07-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for SASL Outbound database not writing
+
+
 ## 0.15.4 2022-07-14 <dave at tiredofit dot ca>
 
    ### Changed

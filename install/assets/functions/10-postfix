@@ -525,7 +525,7 @@ smtpd_banner            = ${SMTPD_BANNER}
 sendmail_path           = /usr/sbin/sendmail
 newaliases_path         = /usr/bin/newaliases
 mailq_path              = /usr/bin/mailq
-bounce_template_file    = "${DATA_LOCATION}"${TEMPLATE_BOUNCE}
+bounce_template_file    = ${DATA_LOCATION}${TEMPLATE_BOUNCE}
 myhostname              = ${SERVER_NAME}
 biff                    = ${BIFF}
 append_dot_mydomain     = ${APPEND_DOT_MYDOMAIN}
@@ -870,10 +870,11 @@ configure_relay_host() {
 ${RELAY_HOST}:${RELAY_PORT} ${relayuserpass}
 EOF
 
-			sudo -u postfix postmap lmdb:/etc/postfix/sasl_passwd
+			postmap lmdb:/etc/postfix/sasl_passwd
 		fi
 	fi
 }
+
 lmtp_ready() {
     if var_true "${ENABLE_LMTP}"; then
 	    print_debug "Checking to see if LMTP Host: ${LMTP_HOST} is accessible"
