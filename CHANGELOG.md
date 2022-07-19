@@ -1,3 +1,9 @@
+## 0.15.6 2022-07-18 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Alias fixes
+
+
 ## 0.15.5 2022-07-18 <dave at tiredofit dot ca>
 
    ### Changed

@@ -20,9 +20,9 @@ configure_relay_host
 lmtp_ready
 rspam_ready
 
-postalias /etc/aliases
+silent postalias /etc/aliases
 touch "${DATA_LOCATION}"sender_domain_checks
-postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
+silent postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 
@@ -34,6 +34,8 @@ if var_true "${ENABLE_TRANSPORT_MAP}" ; then
         postmap lmdb:${DATA_LOCATION}${TRANSPORT_MAP}
     fi
 fi
+
+silent postmap lmdb:/etc/postfix/aliases
 
 ### Execute Custom Scripts if exist to modify parts of the system
 if [ -d /assets/custom-scripts/ ] ; then
