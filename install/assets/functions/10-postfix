@@ -191,10 +191,39 @@ configure_data_dir() {
 	mkdir -p "${DATA_LOCATION}"
 	chmod 700 "${DATA_LOCATION}"
 	chown postfix:postfix "${DATA_LOCATION}"
-	mkdir -p "${DATA_LOCATION}"{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
-	chown -R postfix:root "${DATA_LOCATION}"{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
-	chown -R postfix:postdrop "${DATA_LOCATION}"{maildrop,public}
-	chown -R root:postfix "${DATA_LOCATION}"pid
+	mkdir -p "${DATA_LOCATION}"/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,maildrop,pid,private,public,saved,trace}
+	chown -R postfix:root "${DATA_LOCATION}"/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
+	chown -R postfix:postdrop "${DATA_LOCATION}"/{maildrop,public}
+	chown -R root:postfix "${DATA_LOCATION}"/pid
+}
+
+configure_fail2ban_postfix() {
+        source /assets/defaults/07-firewall
+		print_debug "Fail2Ban: Adding Jail - Postfix"
+		cat <<EOF > "${FAIL2BAN_CONFIG_PATH}"/jail.d/postfix.conf
+[postfix]
+enabled = true
+mode    = more
+port    = smtp,465,submission
+logpath = ${LOG_PATH}${LOG_FILE}
+
+[postfix-rbl]
+enabled  = true
+filter   = postfix[mode=rbl]
+port     = smtp,465,submission
+logpath = ${LOG_PATH}${LOG_FILE}
+maxretry = 1
+
+[postfix-sasl]
+enabled=true
+filter   = postfix[mode=auth]
+port     = smtp,465,submission,imap,imaps,pop3,pop3s
+# You might consider monitoring /var/log/mail.warn instead if you are
+# running postfix since it would provide the same log lines at the
+# "warn" level but overall at the smaller filesize.
+logpath = ${LOG_PATH}${LOG_FILE}
+EOF
+
 }
 
 configure_ldap() {

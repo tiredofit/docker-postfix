@@ -1,3 +1,10 @@
+## 0.16.0 2022-08-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Refactor Fail2ban and IPTables functionality relying on base image instead
+      - Code Cleanup
+
+
 ## 0.15.6 2022-07-18 <dave at tiredofit dot ca>
 
    ### Changed
