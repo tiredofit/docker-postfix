@@ -22,21 +22,24 @@ lmtp_ready
 rspam_ready
 
 silent postalias /etc/aliases
-touch "${DATA_LOCATION}"sender_domain_checks
-silent postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
+sudo -u postfix touch "${DATA_LOCATION}"/sender_domain_checks
+silent sudo -u postfix postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
 
 echo "${SERVER_NAME}" > /etc/mailname
 
 if var_true "${ENABLE_TRANSPORT_MAP}" ; then
     if [ ! -f "${DATA_LOCATION}"/"${TRANSPORT_MAP}" ]; then
-        touch "${DATA_LOCATION}"/"${TRANSPORT_MAP}"
+        sudo -u postfix touch "${DATA_LOCATION}"/"${TRANSPORT_MAP}"
     fi
     if [ ! -f "${DATA_LOCATION}"/"${TRANSPORT_MAP}".db ] ; then
-        postmap lmdb:${DATA_LOCATION}/${TRANSPORT_MAP}
+        sudo -u postfix postmap lmdb:${DATA_LOCATION}/${TRANSPORT_MAP}
     fi
 fi
 
-silent postmap lmdb:/etc/postfix/aliases
+if var_true "${ENABLE_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
+if var_true "${ENABLE_SMTP_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
+
+silent sudo -u postfix postmap lmdb:/etc/postfix/aliases
 
 custom_scripts
 

@@ -1,3 +1,12 @@
+## 0.16.1 2022-10-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add ability to perform header checks - ENABLE_HEADER_CHECKS
+      - Add ability to perform smtp header checks - ENABLE_SMTP_HEADER_CHECKS
+      - Add ability to log subject line if above TRUE = LOG_SUBJECT
+      - Add ability to log subject line if smtp above true = LOG_SUBJECT_SMTP
+
+
 ## 0.16.0 2022-08-05 <dave at tiredofit dot ca>
 
    ### Changed
