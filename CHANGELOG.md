@@ -1,3 +1,9 @@
+## 0.16.2 2022-10-25 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change to log entry for subject line
+
+
 ## 0.16.1 2022-10-25 <dave at tiredofit dot ca>
 
    ### Added

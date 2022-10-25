@@ -519,7 +519,7 @@ EOF
 
         if var_true "${LOG_SUBJECT}" ; then
             if ! grep -q "Subject:" "${DATA_LOCATION}"/header_checks ; then
-                echo "/^Subject:/     INFO subject:" > "${DATA_LOCATION}"/header_checks
+                echo "/^Subject:/     INFO" > "${DATA_LOCATION}"/header_checks
             fi
         else
             if [ -f "${DATA_LOCATION}"/header_checks ] ; then
@@ -529,7 +529,7 @@ EOF
 
         if var_true "${LOG_SUBJECT_SMTP}" ; then
             if ! grep -q "Subject:" "${DATA_LOCATION}"/smtp_header_checks ; then
-                echo "/^Subject:/     INFO subject:" > "${DATA_LOCATION}"/smtp_header_checks
+                echo "/^Subject:/     INFO" > "${DATA_LOCATION}"/smtp_header_checks
             fi
         else
             if [ -f "${DATA_LOCATION}"/smtp_header_checks ] ; then
