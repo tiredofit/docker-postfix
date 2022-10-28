@@ -1,9 +1,10 @@
 #!/command/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service 
+prepare_service
 PROCESS_NAME="rsyslog"
 
 configure_logging
+configure_summary
 
 liftoff

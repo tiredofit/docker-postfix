@@ -1,0 +1,48 @@
+#!/command/with-contenv bash
+
+source /assets/functions/00-container
+source /assets/functions/10-postfix
+source /assets/defaults/10-postfix
+PROCESS_NAME="archive-backup"
+
+if [ "${MODE,,}" = "manual" ] || [ "${1,,}" = "manual" ] || [ "${1,,}" = "now" ]; then
+    ARCHIVE_CLEANUP_TIME_BEGIN=+0
+    manual=TRUE
+    print_debug "Detected Manual Mode"
+else
+    current_time=$(date +"%s")
+    today=$(date +"%Y%m%d")
+
+    if [[ $ARCHIVE_CLEANUP_TIME_BEGIN =~ ^\+(.*)$ ]]; then
+        waittime=$(( ${BASH_REMATCH[1]} * 60 ))
+        target_time=$(($current_time + $waittime))
+    else
+        target_time=$(date --date="${today}${ARCHIVE_CLEANUP_TIME_BEGIN}" +"%s")
+        if [[ "$target_time" < "$current_time" ]]; then
+            target_time=$(($target_time + 24*60*60))
+        fi
+        waittime=$(($target_time - $current_time))
+    fi
+    print_debug "Wait Time: ${waittime} Target time: ${target_time} Current Time: ${current_time}"
+    print_info "Next Cleanup at $(date -d @${target_time} +"%Y-%m-%d %T %Z")"
+    sleep $waittime
+fi
+
+while true; do
+    cleanup_start_time=$(date +"%s")
+    print_info "Archive Cleanup routines started time: $(date +'%Y-%m-%d %T %Z')"
+    archive_management
+    cleanup_finish_time=$(date +"%s")
+    cleanup_total_time=$(echo $((cleanup_finish_time-cleanup_start_time)))
+    if [ -z "$master_exit_code" ] ; then master_exit_code="0" ; fi
+    print_info "Cleanup routines finish time: $(date -d @${cleanup_finish_time} +"%Y-%m-%d %T %Z")"
+    print_debug "Cleanup routines time taken: $(echo ${cleanup_total_time} | awk '{printf "Hours: %d Minutes: %02d Seconds: %02d", $1/3600, ($1/60)%60, $1%60}')"
+
+    if var_true "${manual}" ; then
+        print_debug "Exiting due to manual mode"
+        exit ${master_exit_code};
+    else
+        print_notice "Sleeping for another $(($ARCHIVE_CLEANUP_TIME_FREQ*60-cleanup_total_time)) seconds. Waking up at $(date -d@"$(( $(date +%s)+$(($ARCHIVE_CLEANUP_TIME_FREQ*60-cleanup_total_time))))" +"%Y-%m-%d %T %Z") "
+        sleep $(($ARCHIVE_CLEANUP_TIME_FREQ*60-cleanup_total_time))
+    fi
+done

@@ -6,11 +6,11 @@ configure_logging() {
 		LOG_PATH="/dev/"
 		LOG_FILE="console"
 	else
-		create_logrotate postfix ${LOG_PATH}/${LOG_FILE} none postfix postfix
+		create_logrotate postfix "${LOG_PATH}"/"${LOG_FILE}" none postfix postfix
 
-		touch ${LOG_PATH}${LOG_FILE}
-		chown postfix:postfix ${LOG_PATH}
-		chown postfix:postfix ${LOG_PATH}${LOG_FILE}
+		touch "${LOG_PATH}"/"${LOG_FILE}"
+		chown postfix:postfix "${LOG_PATH}"
+		chown postfix:postfix "${LOG_PATH}"/"${LOG_FILE}"
 
 		cat <<EOF > /etc/rsyslog.conf
 ## Custom Generated rsyslog Configuration! Do not edit, instead set ENV Vars
@@ -32,4 +32,25 @@ mail.*							-${LOG_PATH}${LOG_FILE}
 EOF
 
 	fi
+}
+
+configure_summary() {
+    if [ "${LOG_TYPE,,}" = "file" ] ; then
+        if var_true "${LOG_SUMMARY}" ; then
+            print_debug "[configure_summary] Populating crontab with generate-postfix-stats"
+            mkdir -p "${LOG_PATH}"/summary
+            chown -R postfix:root "${LOG_PATH}"
+            echo "58 23 * * * sudo -u postfix pflogsumm -d today --iso-date-time --problems-first -e --verbose_msg_detail --rej_add_from --zero_fill ${LOG_PATH}/${LOG_FILE} > ${LOG_PATH}/summary/$(TZ=$TIMEZONE date '+%Y%m%d-%H%M%S')-${SERVER_NAME}.log" > /assets/cron/postfix-daily-statistics
+        fi
+        if var_true "${CONTAINER_ENABLE_LOGROTATE}" && var_true "${LOG_SUMMARY_ROTATE}" ; then
+            print_debug "[configure_summary] Enabling Logrotate"
+            create_logrotate postfix-statistics "${LOG_PATH}"/summary/*.log postfix postfix
+        fi
+        if [ -n "${LOG_SUMMARY_KEEP_DAYS}" ] ; then
+            print_debug "[configure_summary] Keeping only the most '${LOG_SUMMARY_KEEP_DAYS}' days of summaries"
+            echo "0 0 * * * find ${LOG_PATH}/summary/*.log -mtime +${LOG_SUMMARY_KEEP_DAYS} -exec rm {} \;" > /assets/cron/postfix-daily-statistics-delete-older
+        fi
+    else
+        print_error "You requested Log Summaries, but you are outputting logs to the console - Summaries have been disabled"
+    fi
 }

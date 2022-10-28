@@ -5,45 +5,16 @@ source /assets/defaults/03-monitoring
 prepare_service
 PROCESS_NAME="postfix"
 
-
-## Postfix Configuration
-certificates dhparam
-certificates "${TLS_SERVER_CERT_FILE}"
-configure_data_dir
-if var_true "${ENABLE_LDAP}" ; then configure_ldap; fi
-if var_true "${CONTAINER_ENABLE_FIREWALL}" && var_true "${CONTAINER_ENABLE_FAIL2BAN}" ; then configure_fail2ban_postfix; fi
+setup_container_mode
+configure_fail2ban_postfix
+configure_filesystem
+configure_ldap
 configure_postfix_main
 configure_postfix_master
-configure_postfix_postscreen
 configure_postfix_sasl
 configure_postsrsd
-configure_relay_host
-lmtp_ready
-rspam_ready
-
-silent postalias /etc/aliases
-sudo -u postfix touch "${DATA_LOCATION}"/sender_domain_checks
-silent sudo -u postfix postmap lmdb:"${DATA_LOCATION}"sender_domain_checks
-
-echo "${SERVER_NAME}" > /etc/mailname
-
-if var_true "${ENABLE_TRANSPORT_MAP}" ; then
-    if [ ! -f "${DATA_LOCATION}"/"${TRANSPORT_MAP}" ]; then
-        sudo -u postfix touch "${DATA_LOCATION}"/"${TRANSPORT_MAP}"
-    fi
-    if [ ! -f "${DATA_LOCATION}"/"${TRANSPORT_MAP}".db ] ; then
-        sudo -u postfix postmap lmdb:${DATA_LOCATION}/${TRANSPORT_MAP}
-    fi
-fi
-
-if var_true "${ENABLE_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
-if var_true "${ENABLE_SMTP_HEADER_CHECKS}" ; then silent sudo -u postfix postmap "${DATA_PATH}"/header_checks ; fi
-
-silent sudo -u postfix postmap lmdb:/etc/postfix/aliases
-
+configure_tls
+check_availability
 custom_scripts
 
-chown -R postfix:postfix "${DATA_LOCATION}"/{active,bounce,corrupt,defer,deferred,flush,hold,incoming,private,saved,trace}
-chown -R postfix:postdrop "${DATA_LOCATION}"/{maildrop,public}
-chown postfix:postfix "${DATA_LOCATION}"/*.*
 liftoff

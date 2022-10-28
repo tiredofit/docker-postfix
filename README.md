@@ -25,7 +25,7 @@ This is a work in progress and not stable for production use.
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
-    - [Multi Architecture](#multi-archictecture)
+    - [Multi Architecture](#multi-architecture)
 - [Configuration](#configuration)
   - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
@@ -77,7 +77,8 @@ The following directories are used for configuration and can be mapped for persi
 
 | Directory | Description |
 | --------- | ----------- |
-
+| /data | Volatile Information (Configuration, Queue, Archive) |
+| /logs | Logfiles |
 
 * * *
 ### Environment Variables

@@ -1,3 +1,17 @@
+## 1.0.0 2022-10-28 <dave at tiredofit dot ca>
+
+This image has now been entirely rewritten and merges tiredofit/postfix and tiredofit/postfix-relay.
+
+   ### Added
+      - Add message archiving + cleanup + archiving the archive + cleanup
+      - New MODE=(default|relay) setting to determine how you want to use this image
+      - All configuration sections are switchable now, ie ENABLE_POSTSCREEN=FALSE will remove its functionality
+      - Seperate Config, Data, and Queue Folders
+
+   ### Changed
+      - Many environment varialbes have changed - It's best to start with a whole new data folder if possible
+
+
 ## 0.16.2 2022-10-25 <dave at tiredofit dot ca>
 
    ### Changed

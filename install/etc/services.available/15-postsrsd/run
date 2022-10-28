@@ -17,6 +17,6 @@ silent exec /usr/sbin/postsrsd \
                             -N "${POSTSRSD_HASHMIN}" \
                             -n "${POSTSRSD_HASHLEGNTH}" \
                             -r "${POSTSRSD_REVERSE_PORT}" \
-                            -s "${DATA_LOCATION}${POSTSRSD_SECRET}" \
+                            -s "${CONFIG_PATH}/${POSTSRSD_SECRET}" \
                             -u nobody \
                             -X ${POSTSRSD_EXCLUDE_DOMAINS}

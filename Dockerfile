@@ -47,6 +47,8 @@ RUN set -x && \
                 postfix-pcre \
                 postfix-ldap \
                 rsyslog \
+                tar \
+                zstd \
                 && \
     \
     ## Build
