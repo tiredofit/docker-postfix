@@ -1,3 +1,9 @@
+## 1.0.3 2022-10-30 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Correct write postfix summary as postfix user
+
+
 ## 1.0.2 2022-10-29 <dave at tiredofit dot ca>
 
    ### Added
