@@ -651,6 +651,7 @@ EOF
 
 ### Before-220 tests
 postscreen_blacklist_action     = ${POSTSCREEN_BLACKLIST_ACTION}
+postscreen_cache_map            = lmdb:${CONFIG_PATH}/postscreen_cache
 postscreen_cache_cleanup_interval = ${POSTSCREEN_CACHE_CLEANUP_INTERVAL}
 postscreen_dnsbl_action         = ${POSTSCREEN_DNSBL_ACTION}
 postscreen_dnsbl_reply_map      = pcre:${CONFIG_PATH}/postscreen_dnsbl_reply_map.pcre
