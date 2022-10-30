@@ -1,3 +1,9 @@
+## 1.0.2 2022-10-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Keep postscreen cache persistent
+
+
 ## 1.0.1 2022-10-29 <dave at tiredofit dot ca>
 
    ### Added
