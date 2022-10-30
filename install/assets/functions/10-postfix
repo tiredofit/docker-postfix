@@ -646,7 +646,8 @@ EOF
 
             truefalse_yesno POSTSCREEN_ENABLE_NON_SMTP_COMMAND
             truefalse_yesno POSTSCREEN_ENABLE_PIPELINING
-
+            touch "${CONFIG_PATH}"/postscreen_cache.lmdb
+            chown postfix:postfix "${CONFIG_PATH}"/postscreen_cache.lmdb
             postscreen_settings="$(cat <<EOF
 
 ### Before-220 tests
