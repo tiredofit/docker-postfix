@@ -3,7 +3,7 @@
 source /assets/functions/00-container
 source /assets/functions/10-postfix
 source /assets/defaults/10-postfix
-PROCESS_NAME="archive-backup"
+PROCESS_NAME="archive-cleanup"
 
 if [ "${MODE,,}" = "manual" ] || [ "${1,,}" = "manual" ] || [ "${1,,}" = "now" ]; then
     ARCHIVE_CLEANUP_TIME_BEGIN=+0

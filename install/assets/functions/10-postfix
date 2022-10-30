@@ -262,26 +262,10 @@ configure_fail2ban_postfix() {
         source /assets/defaults/07-firewall
         print_debug "Fail2Ban: Adding Jail - Postfix"
         cat <<EOF > "${FAIL2BAN_CONFIG_PATH}"/jail.d/postfix.conf
-[postfix]
-enabled = true
-mode    = more
-port    = smtp,465,submission
-logpath = ${LOG_PATH}/${LOG_FILE}
-
-[postfix-rbl]
-enabled  = true
-filter   = postfix[mode=rbl]
-port     = smtp,465,submission
-logpath = ${LOG_PATH}/${LOG_FILE}
-maxretry = 1
-
 [postfix-sasl]
-enabled=true
+enabled=${FAIL2BAN_ENABLE_SASL,,}
 filter   = postfix[mode=auth]
 port     = smtp,465,submission,imap,imaps,pop3,pop3s
-# You might consider monitoring /var/log/mail.warn instead if you are
-# running postfix since it would provide the same log lines at the
-# "warn" level but overall at the smaller filesize.
 logpath = ${LOG_PATH}/${LOG_FILE}
 EOF
     fi
@@ -822,8 +806,8 @@ EOF
 smtpd_sasl_path                 = smtpd
 smtpd_sasl_auth_enable          = ${SASL_AUTH_ENABLE}
 broken_sasl_auth_clients        = ${SASL_BROKEN_AUTH_CLIENTS}
-#smtpd_sasl_security_options    = ${SASL_SECURITY_OPTIONS}
-#smtpd_sasl_tls_security_options = ${SASL_SECURITY_OPTIONS_TLS}
+smtpd_sasl_security_options    = ${SASL_SECURITY_OPTIONS}
+smtpd_sasl_tls_security_options = ${SASL_SECURITY_OPTIONS_TLS}
 EOF
                                 )"
         fi

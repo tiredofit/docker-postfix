@@ -1,3 +1,9 @@
+## 1.0.1 2022-10-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add Fail2ban switchable features 
+
+
 ## 1.0.0 2022-10-28 <dave at tiredofit dot ca>
 
 This image has now been entirely rewritten and merges tiredofit/postfix and tiredofit/postfix-relay.
