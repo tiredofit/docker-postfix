@@ -120,4 +120,4 @@ RUN set -x && \
 EXPOSE 25 587
 
 ## Entrypoint Configuration
-ADD install /
+COPY install /

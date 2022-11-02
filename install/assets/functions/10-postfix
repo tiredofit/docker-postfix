@@ -40,7 +40,7 @@ archive_management(){
     if [ -n "${ARCHIVE_CLEANUP_TIME_CLEANUP}" ]; then
         if [ "${master_exit_code}" != 1 ]; then
                 print_info "Cleaning up old archived emails on filesystem"
-                silent find "${ARCHIVE_PATH}"/ -not -path "backup/*" -mmin +"${ARCHIVE_CLEANUP_TIME_CLEANUP}" -iname "*" -type f -delete;
+                silent find "${ARCHIVE_PATH}"/ -depth -not \( -path "${ARCHIVE_PATH}"/backup -prune \) -type f -name "*" -mmin +"${ARCHIVE_CLEANUP_TIME_CLEANUP}" -delete;
         else
             print_error "Skipping Cleaning up old archives because there were errors in backing up"
         fi

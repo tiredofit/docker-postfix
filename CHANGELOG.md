@@ -1,3 +1,9 @@
+## 1.0.4 2022-11-02 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for deleting old archives
+
+
 ## 1.0.3 2022-10-30 <dave at tiredofit dot ca>
 
    ### Changed
