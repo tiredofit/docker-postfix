@@ -1,3 +1,9 @@
+## 1.0.5 2022-11-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Move Archive bakcup to /backup/
+
+
 ## 1.0.4 2022-11-02 <dave at tiredofit dot ca>
 
    ### Changed
