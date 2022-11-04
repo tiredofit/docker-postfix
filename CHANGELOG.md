@@ -1,3 +1,9 @@
+## 1.0.6 2022-11-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix defaults
+
+
 ## 1.0.5 2022-11-04 <dave at tiredofit dot ca>
 
    ### Changed
