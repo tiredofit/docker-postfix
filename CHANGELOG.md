@@ -1,3 +1,9 @@
+## 1.0.8 2022-11-07 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for timetamp building for archive
+
+
 ## 1.0.7 2022-11-07 <dave at tiredofit dot ca>
 
    ### Changed
