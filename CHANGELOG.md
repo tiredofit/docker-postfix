@@ -1,3 +1,9 @@
+## 1.0.7 2022-11-07 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Rework Archive Cleanup to not have to deal with two sets of timers
+
+
 ## 1.0.6 2022-11-04 <dave at tiredofit dot ca>
 
    ### Changed

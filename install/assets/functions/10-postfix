@@ -12,44 +12,24 @@ case "${SASL_AUTH_TYPE,,}" in
 esac
 
 archive_management(){
-    copy() {
-    if [ -n "${ENABLE_ARCHIVE_CLEANUP_COPY}" ] ; then
-        if [ "${master_exit_code}" != 1 ]; then
-                print_info "Copying Postfix Archive and Archiving"
-                mkdir -p "${ARCHIVE_BACKUP_PATH}"
-                chown postfix:postfix "${ARCHIVE_BACKUP_PATH}"
-                now=$(date +"%Y%m%d-%H%M%S")
-                archive_copy=$(mktemp -d)
-                cp -Rp "${ARCHIVE_PATH}"/{cur,new,tmp} "${archive_copy}"/
-                cd "${archive_copy}"
-                silent tar -I "zstd -${ARCHIVE_CLEANUP_COMPRESSION_LEVEL}" -cpf "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst *
-                silent chown postfix:postfix "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst
-                cd "${ARCHIVE_PATH}"/backup
-                silent rm -rf "${archive_copy}"
-                if  [ -n "${ARCHIVE_CLEANUP_COPY_TIME_CLEANUP}" ] ; then
-                    print_info "Cleaning old archives copies"
-                    silent find "${ARCHIVE_BACKUP_PATH}"/ -mmin +"${ARCHIVE_CLEANUP_COPY_TIME_CLEANUP}" -iname "*" -type f -delete;
-                fi
-        else
-            print_error "Skipping copying postfix archive"
-        fi
+    print_info "Copying Postfix Archive and Archiving"
+    mkdir -p "${ARCHIVE_BACKUP_PATH}"
+    chown postfix:postfix "${ARCHIVE_BACKUP_PATH}"
+    now=$(date +"%Y%m%d-%H%M%S")
+    archive_copy=$(mktemp -d)
+    silent cp -Rp "${ARCHIVE_PATH}"/{cur,new,tmp} "${archive_copy}"/
+    silent rm -rf "${ARCHIVE_PATH}"/cur/*
+    silent rm -rf "${ARCHIVE_PATH}"/new/*
+    silent rm -rf "${ARCHIVE_PATH}"/tmp/*
+    cd "${archive_copy}"
+    silent tar -I "zstd -${ARCHIVE_CLEANUP_COMPRESSION_LEVEL}" -cpf "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst *
+    silent chown postfix:postfix "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst
+    cd "${ARCHIVE_PATH}"/backup
+    silent rm -rf "${archive_copy}"
+    if  [ -n "${ARCHIVE_CLEANUP_COPY_TIME_CLEANUP}" ] ; then
+        print_info "Cleaning old archives copies"
+        silent find "${ARCHIVE_BACKUP_PATH}"/ -mmin +"${ARCHIVE_CLEANUP_TIME_CLEANUP}" -iname "*" -type f -delete;
     fi
-    }
-
-    cleanup() {
-    if [ -n "${ARCHIVE_CLEANUP_TIME_CLEANUP}" ]; then
-        if [ "${master_exit_code}" != 1 ]; then
-                print_info "Cleaning up old archived emails on filesystem"
-                cd "${ARCHIVE_PATH}"/
-                silent find "${ARCHIVE_PATH}"/  -mmin +"${ARCHIVE_CLEANUP_TIME_CLEANUP}" -iname "*" -type f -delete;
-        else
-            print_error "Skipping Cleaning up old archives because there were errors in backing up"
-        fi
-    fi
-    }
-
-    copy
-    cleanup
 }
 
 certificates() {
