@@ -17,7 +17,7 @@ else
         waittime=$(( ${BASH_REMATCH[1]} * 60 ))
         target_time=$(($current_time + $waittime))
     else
-        target_time=$(date --date="${today} ${ARCHIVE_CLEANUP_TIME_BEGIN}" +"%s")
+        target_time=$(date --date="${today}${ARCHIVE_CLEANUP_TIME_BEGIN}" +"%s")
         if [[ "$target_time" < "$current_time" ]]; then
             target_time=$(($target_time + 24*60*60))
         fi

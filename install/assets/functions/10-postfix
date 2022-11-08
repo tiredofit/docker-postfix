@@ -24,7 +24,7 @@ archive_management(){
     cd "${archive_copy}"
     silent tar -I "zstd -${ARCHIVE_CLEANUP_COMPRESSION_LEVEL}" -cpf "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst *
     silent chown postfix:postfix "${ARCHIVE_BACKUP_PATH}"/"${now}"-postfix-archive.tar.zst
-    cd "${ARCHIVE_PATH}"/backup
+    cd "${ARCHIVE_PATH}"
     silent rm -rf "${archive_copy}"
     if  [ -n "${ARCHIVE_CLEANUP_COPY_TIME_CLEANUP}" ] ; then
         print_info "Cleaning old archives copies"
