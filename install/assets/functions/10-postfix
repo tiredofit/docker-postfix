@@ -48,7 +48,7 @@ certificates() {
             echo "000a" > "$(dirname "${CA_CERT_FILE}")"/serial
             touch "$(dirname "${CA_CERT_FILE}")"/certindex
 
-            silent eval "openssl req \
+            silent eval "${ssl_exec} req \
                   -newkey rsa:4096 -keyout ${CA_KEY_FILE} \
                   -x509 -days 3650 -nodes -out ${CA_CERT_FILE} \
                   -subj \"${CA_CERT_SUBJECT}\""
@@ -85,7 +85,7 @@ certificates() {
             extendedKeyUsage = serverAuth,clientAuth
 
             [ req ]
-            default_bits		= 2048
+            default_bits = 2048
 
             [default_conf]
             ssl_conf = ssl_sect
@@ -95,7 +95,7 @@ certificates() {
 
             [system_default_sect]
             MinProtocol = TLSv1.1
-            MaxProtocol = TLSv1.2
+            MaxProtocol = TLSv1.3
             CipherString = DEFAULT
 EOF
         else
@@ -116,7 +116,7 @@ EOF
             if var_true "$CREATE_CA" ; then
                 if [ ! -f "${1%%.*}".key ] ; then
                     print_debug "[certificates | create_certificate] Creating Certificate: ${1}"
-                    silent eval "openssl req \
+                    silent eval "${ssl_exec} req \
                             -newkey rsa:2048 -keyout ${1%%.*}.key \
                           -nodes -out ${1%%.*}.csr \
                           -subj \"${CERT_SUBJECT}\""
@@ -124,7 +124,7 @@ EOF
             else
                 if [ ! -f "${1%%.*}".key ] ; then
                     print_debug "[certificates | create_certificate] Creating Certificate: ${1}"
-                    silent eval "openssl req \
+                    silent eval "${ssl_exec} req \
                           -new -x509 -nodes -days 3650
                           -config /tmp/openssl.cnf
                           -out ${1%%.*}.crt \
@@ -135,7 +135,7 @@ EOF
             if var_true "${CREATE_CA}" ; then
                 if [ ! -f "${1%%.*}".cert ] ; then
                     print_debug "[certificates | create_certificate] Signing Certificate: ${1}"
-                    silent eval "openssl ca -batch -config $(dirname "${CA_CERT_FILE}")/${CA_NAME}.conf -notext -in ${1%%.*}.csr -out ${1%%.*}.crt"
+                    silent eval "${ssl_exec} ca -batch -config $(dirname "${CA_CERT_FILE}")/${CA_NAME}.conf -notext -in ${1%%.*}.csr -out ${1%%.*}.crt"
                     rm -rf "$(tail -n 1 "$(dirname "${CA_CERT_FILE}")"/certindex | awk '{print $3}').pem"
                     rm -rf "${1%%.*}".csr
                 fi
@@ -148,7 +148,7 @@ EOF
 
             if [ ! -f "${1%%.*}"-public.pem ] ; then
                 print_debug "[certificates | create_certificate] Creating Public Key for: ${1}"
-                silent openssl rsa -in "${1%%.*}".pem -out "${1%%.*}"-public.pem -outform PEM -pubout
+                silent ${ssl_exec} rsa -in "${1%%.*}".pem -out "${1%%.*}"-public.pem -outform PEM -pubout
             fi
         fi
     }
@@ -170,7 +170,7 @@ EOF
 
     check_dhparam() {
         print_debug "[certificates | check_dhparam] Checking Existence of ${TLS_SERVER_DH_PARAM_FILE}"
-        if [ ! -f TLS_SERVER_DH_PARAM_FILE ] ; then
+        if [ ! -f "${TLS_SERVER_DH_PARAM_FILE}" ] ; then
                 create_dhparam
         fi
     }
@@ -178,7 +178,7 @@ EOF
     create_dhparam() {
         print_notice "[certificates | create_dhparam] Creating ${TLS_SERVER_DH_PARAM_FILE}"
         mkdir -p "$(dirname "${TLS_SERVER_DH_PARAM_FILE}")"
-        silent openssl dhparam -out "${TLS_SERVER_DH_PARAM_FILE}" "${TLS_SERVER_DH_PARAM_KEYSIZE}"
+        silent ${ssl_exec} dhparam -out "${TLS_SERVER_DH_PARAM_FILE}" "${TLS_SERVER_DH_PARAM_KEYSIZE}"
     }
 
     trust_ca() {
@@ -192,6 +192,23 @@ EOF
             fi
         fi
     }
+
+    if ! command -v openssl &> /dev/null && ! command -v libressl &> /dev/null ; then
+        print_error "[certificates] Can't find a suitable SSL engine - Exiting.."
+        exit 1
+    fi
+
+    if command -v libressl &> /dev/null ; then
+        ssl_exec="libressl"
+    fi
+
+    if command -v openssl &> /dev/null ; then
+        ssl_exec="openssl"
+    fi
+
+    if command -v openssl &> /dev/null &&  command -v libressl &> /dev/null ; then
+        ssl_exec="openssl"
+    fi
 
     case "${1,,}" in
         "dhparam" )

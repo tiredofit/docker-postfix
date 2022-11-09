@@ -1,3 +1,10 @@
+## 1.0.10 2022-11-09 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Future proof certificates generation for when Alpine 3.17 is released
+      - Fix dhparam checks
+
+
 ## 1.0.9 2022-11-07 <dave at tiredofit dot ca>
 
    ### Changed
