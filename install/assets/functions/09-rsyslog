@@ -40,7 +40,7 @@ configure_summary() {
             print_debug "[configure_summary] Populating crontab with generate-postfix-stats"
             mkdir -p "${LOG_PATH}"/summary
             chown -R postfix:root "${LOG_PATH}"
-            echo "58 23 * * * sudo -u postfix pflogsumm -d today --iso-date-time --problems-first -e --verbose_msg_detail --rej_add_from --zero_fill ${LOG_PATH}/${LOG_FILE} | sudo -u postfix tee ${LOG_PATH}/summary/$(TZ=$TIMEZONE date '+%Y%m%d-%H%M%S')-${SERVER_NAME}.log" > /assets/cron/postfix-daily-statistics
+            echo "58 23 * * * sudo -u postfix pflogsumm -d today --iso-date-time --problems-first -e --verbose_msg_detail --rej_add_from --zero_fill ${LOG_PATH}/${LOG_FILE} | sudo -u postfix tee ${LOG_PATH}/summary/\$(TZ=$TIMEZONE date '+%Y%m%d-%H%M%S')-${SERVER_NAME}.log" > /assets/cron/postfix-daily-statistics
         fi
         if var_true "${CONTAINER_ENABLE_LOGROTATE}" && var_true "${LOG_SUMMARY_ROTATE}" ; then
             print_debug "[configure_summary] Enabling Logrotate"

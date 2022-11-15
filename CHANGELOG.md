@@ -1,3 +1,9 @@
+## 1.0.11 2022-11-15 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for log summaries overwriting past summaries
+
+
 ## 1.0.10 2022-11-09 <dave at tiredofit dot ca>
 
    ### Changed
