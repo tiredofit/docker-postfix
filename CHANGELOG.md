@@ -1,3 +1,10 @@
+## 1.0.13 2022-11-24 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Bugfix for Archive cleanup
+      - Bugfix to not write multiple archive aliases
+
+
 ## 1.0.12 2022-11-23 <dave at tiredofit dot ca>
 
    ### Added
