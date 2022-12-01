@@ -1,20 +1,27 @@
-FROM docker.io/tiredofit/alpine:3.17
+ARG DISTRO="alpine"
+ARG DISTRO_VARIANT="3.17"
+
+FROM docker.io/tiredofit/${DISTRO}:${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
-## Set Defaults
-ENV CYRUS_SASL_VERSION=2.1.28 \
-    POSTSRSD_VERSION=1.11 \
+ARG CYRUS_SASL_VERSION
+ARG POSTSRSD_VERSION
+
+ENV CYRUS_SASL_VERSION=${CYRUS_SASL_VERSION:-"2.1.28"} \
+    POSTSRSD_VERSION=${POSTSRSD_VERSION:-"1.11"} \
+    CYRUS_SASL_REPO_URL=https://github.com/cyrusimap/cyrus-sasl \
+    POSTSRSD_REPO_URL=https://github.com/roehling/postsrsd \
     CONTAINER_ENABLE_MESSAGING=FALSE \
     IMAGE_NAME="tiredofit/postfix" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-postfix/"
 
-## Dependencies Setup
-RUN set -x && \
+RUN source /assets/functions/00-container && \
+    set -x && \
     addgroup -g 2525 postfix && \
     adduser -S -D -H -h /var/spool/postfix -s /sbin/nologin -G postfix -u 2525 postfix && \
-    apk update && \
-    apk upgrade && \
-    apk add -t .cyrus-sasl-build-deps \
+    package update && \
+    package upgrade && \
+    package install .cyrus-sasl-build-deps \
                 autoconf \
                 automake \
                 build-base \
@@ -30,12 +37,11 @@ RUN set -x && \
                 sqlite-dev \
                 && \
     \
-    apk add -t .postsrsd-build-deps \
+    package install .postsrsd-build-deps \
                 cmake \
                 && \
     \
-    apk add -t .postfix-run-deps \
-                fail2ban \
+    package install .postfix-run-deps \
                 heimdal-libs \
                 inotify-tools \
                 libldap \
@@ -51,32 +57,27 @@ RUN set -x && \
                 zstd \
                 && \
     \
-    ## Build
-    git clone https://github.com/roehling/postsrsd /usr/src/postsrsd && \
-    cd /usr/src/postsrsd && \
-    git checkout ${POSTSRSD_VERSION} && \
-    mkdir build && \
-    cd build && \
+    clone_git_repo "${POSTSRSD_REPO_URL}" "${POSTSRSD_VERSION}" && \
     mkdir -p /etc/postsrsd && \
+    mkdir -p build && \
+    cd build && \
     cmake .. -DGENERATE_SRS_SECRET=OFF \
              -DCONFIG_DIR="/etc/postsrsd" \
              -DDOC_DIR="/usr/src/postsrsd/doc" \
              -DCMAKE_INSTALL_PREFIX=/usr \
              -DINIT_FLAVOR=none \
              && \
-    make && \
+    make -j$(getconf _NPROCESSORS_ONLN) && \
     make install && \
     mv /etc/postsrsd/ /assets/postsrsd && \
     \
-    ## Build Cyrus SASLD
-    git clone -b cyrus-sasl-${CYRUS_SASL_VERSION} https://github.com/cyrusimap/cyrus-sasl/ /usr/src/cyrus-sasl && \
-    cd /usr/src/cyrus-sasl && \
+    clone_git_repo "${CYRUS_SASL_REPO_URL}" cyrus-sasl-"${CYRUS_SASL_VERSION}" && \
     autoreconf -fiv && \
     ./configure \
         --prefix=/usr \
         --sysconfdir=/etc \
         --localstatedir=/var \
-        --mandir=/usr/src/cyrus-sasl/man \
+        --mandir=$(pwd)/man \
         --disable-java \
         --disable-otp \
         --enable-alwaystrue \
@@ -107,17 +108,14 @@ RUN set -x && \
     make install && \
     mkdir -p /etc/sasl2/sasldb2 && \
     ln -s /etc/postfix/aliases /etc/aliases && \
-    \
-    ## Cleanup
-    cd /etc/fail2ban && \
-    rm -rf fail2ban.conf fail2ban.d jail.conf jail.d paths-*.conf && \
-    apk del .cyrus-sasl-build-deps .postsrsd-build-deps && \
-    rm -rf /usr/src/* && \
-    rm -rf /etc/logrotate.d/rsyslog && \
-    rm -rf /var/cache/apk/*
+    package remove \
+            .cyrus-sasl-build-deps \
+            .postsrsd-build-deps \
+            && \
+    package cleanup && \
+    rm -rf /etc/logrotate.d/* \
+           /usr/src/*
 
-## Networking Configuration
 EXPOSE 25 587
 
-## Entrypoint Configuration
 COPY install /
