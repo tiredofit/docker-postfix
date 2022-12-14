@@ -748,8 +748,16 @@ EOF
         if [ -n "${ADDITIONAL_VIRTUAL_ALIAS_MAPS}" ]; then
             touch "${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
             chown postfix:postfix "${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
-            sudo -u postfix postmap lmdb:"${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
-            additional_virtual_alias_maps=", lmdb:${CONFIG_PATH}/${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
+            case "${ADDITIONAL_VIRTUAL_ALIAS_MAPS##*.}" in
+                pcre )
+                    additional_virtual_alias_maps_prefix="regexp"
+                ;;
+                lmdb )
+                    sudo -u postfix postmap lmdb:"${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
+                    additional_virtual_alias_maps_prefix="lmtp"
+                ;;
+            esac
+            additional_virtual_alias_maps=", ${additional_virtual_alias_maps_prefix}:${CONFIG_PATH}/${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
         fi
 
         ### Header Checks

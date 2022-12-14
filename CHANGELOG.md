@@ -1,3 +1,9 @@
+## 1.0.15 2022-12-13 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Update ADDITIONAL_VIRTUAL_ALIAS_MAPS to write proper configuration based on extension (supports pcre / lmdb at moment, easy to expand)
+
+
 ## 1.0.14 2022-12-01 <dave at tiredofit dot ca>
 
    ### Added
