@@ -1,3 +1,9 @@
+## 1.0.16 2022-12-22 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Assume lmdb if no extension for virtual_aliases
+
+
 ## 1.0.15 2022-12-13 <dave at tiredofit dot ca>
 
    ### Changed

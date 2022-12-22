@@ -1,7 +1,7 @@
 # github.com/tiredofit/docker-postfix
 
 [![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-postfix?style=flat-square)](https://github.com/tiredofit/docker-postfix/releases/latest)
-[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-postfix/build?style=flat-square)](https://github.com/tiredofit/docker-postfix/actions?query=workflow%3Abuild)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tiredofit/docker-postfix.git/main.yml?branch=main&style=flat-square)](https://github.com/tiredofit/docker-postfix.git/actions)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/postfix.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/postfix/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/postfix.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/postfix/)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)

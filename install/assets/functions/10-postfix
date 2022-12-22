@@ -752,7 +752,7 @@ EOF
                 pcre )
                     additional_virtual_alias_maps_prefix="regexp"
                 ;;
-                lmdb )
+                lmdb | *)
                     sudo -u postfix postmap lmdb:"${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
                     additional_virtual_alias_maps_prefix="lmtp"
                 ;;
