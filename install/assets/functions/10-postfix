@@ -754,7 +754,7 @@ EOF
                 ;;
                 lmdb | *)
                     sudo -u postfix postmap lmdb:"${CONFIG_PATH}"/"${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"
-                    additional_virtual_alias_maps_prefix="lmtp"
+                    additional_virtual_alias_maps_prefix="lmdb"
                 ;;
             esac
             additional_virtual_alias_maps=", ${additional_virtual_alias_maps_prefix}:${CONFIG_PATH}/${ADDITIONAL_VIRTUAL_ALIAS_MAPS}"

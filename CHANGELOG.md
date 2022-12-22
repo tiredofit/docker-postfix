@@ -1,3 +1,9 @@
+## 1.0.17 2022-12-22 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Alias prefix lmtp -> lmdb
+
+
 ## 1.0.16 2022-12-22 <dave at tiredofit dot ca>
 
    ### Changed
