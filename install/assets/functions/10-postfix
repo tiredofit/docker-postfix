@@ -398,7 +398,7 @@ configure_postfix_main() {
             message_archive="$(cat <<EOF
 
 # Message Archiving
-always_bcc                = ${ARCHIVE_ADDRESS,,}
+always_bcc                  = ${ARCHIVE_ADDRESS,,}
 
 EOF
                             )"
@@ -555,11 +555,11 @@ EOD
             milter_settings="$(cat <<EOF
 
 # Milter Settings (Spam Filters)
-smtpd_milters               = ${milter_protocol}${milter_host_smtpd}
-non_smtpd_milters           = ${milter_protocol}${milter_host_non_smtpd}
-milter_protocol             = ${MILTER_VERSION}
-milter_mail_macros          = ${MILTER_MAIL_MACROS}
-milter_default_action       = ${MILTER_DEFAULT_ACTION}
+smtpd_milters                   = ${milter_protocol}${milter_host_smtpd}
+non_smtpd_milters               = ${milter_protocol}${milter_host_non_smtpd}
+milter_protocol                 = ${MILTER_VERSION}
+milter_mail_macros              = ${MILTER_MAIL_MACROS}
+milter_default_action           = ${MILTER_DEFAULT_ACTION}
 EOF
                         )"
 
@@ -891,7 +891,7 @@ EOF
         ### HELO
             #### Require Client to send HELO
         if var_true "${SMTPD_HELO_REQUIRED}" ; then
-            smtpd_helo_required="smtpd_helo_required            = yes"
+            smtpd_helo_required="smtpd_helo_required             = yes"
         fi
 
             #### Reject when doesn't have a proper A record
@@ -1002,32 +1002,32 @@ ${smtpd_data_restrictions}
 ${smtpd_helo_required}
 ${smtpd_helo_restrictions}
 ${smtpd_recipient_restrictions}
-smtpd_relay_restrictions        = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
+smtpd_relay_restrictions            = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 ${smtpd_sender_restrictions}
 
 ${smtpd_sasl_settings}
 
 # TLS encryption - server
-smtpd_tls_security_level        = ${TLS_SERVER_SECURITY_LEVEL}
-smtpd_tls_auth_only             = ${TLS_SERVER_AUTH_ONLY}
-smtpd_tls_cert_file             = ${TLS_SERVER_CERT_FILE}
-smtpd_tls_key_file              = ${TLS_SERVER_KEY_FILE}
-smtpd_tls_loglevel              = ${LOG_LEVEL_TLS_SERVER}
-smtpd_tls_received_header       = ${TLS_SERVER_RECEIVED_HEADER}
-smtpd_tls_session_cache_timeout = ${TLS_SERVER_SESSION_CACHE_TIMEOUT}
-tls_random_source               = dev:/dev/urandom
-smtpd_tls_dh1024_param_file     = ${TLS_SERVER_DH_PARAM_FILE}
-smtpd_tls_session_cache_database = lmdb:${CONFIG_PATH}/smtpd_scache
+smtpd_tls_security_level            = ${TLS_SERVER_SECURITY_LEVEL}
+smtpd_tls_auth_only                 = ${TLS_SERVER_AUTH_ONLY}
+smtpd_tls_cert_file                 = ${TLS_SERVER_CERT_FILE}
+smtpd_tls_key_file                  = ${TLS_SERVER_KEY_FILE}
+smtpd_tls_loglevel                  = ${LOG_LEVEL_TLS_SERVER}
+smtpd_tls_received_header           = ${TLS_SERVER_RECEIVED_HEADER}
+smtpd_tls_session_cache_timeout     = ${TLS_SERVER_SESSION_CACHE_TIMEOUT}
+tls_random_source                   = dev:/dev/urandom
+smtpd_tls_dh1024_param_file         = ${TLS_SERVER_DH_PARAM_FILE}
+smtpd_tls_session_cache_database    = lmdb:${CONFIG_PATH}/smtpd_scache
 smtpd_tls_mandatory_exclude_ciphers = ${TLS_SERVER_MANDATORY_EXCLUDE_CIPHERS}
-smtpd_tls_mandatory_protocols   = ${TLS_SERVER_MANDATORY_PROTOCOLS}
-smtpd_tls_protocols             = ${TLS_SERVER_PROTOCOLS}
+smtpd_tls_mandatory_protocols       = ${TLS_SERVER_MANDATORY_PROTOCOLS}
+smtpd_tls_protocols                 = ${TLS_SERVER_PROTOCOLS}
 
 # TLS encryption - client
-smtp_tls_security_level         = ${TLS_CLIENT_SECURITY_LEVEL}
-smtp_tls_loglevel               = ${LOG_LEVEL_TLS_CLIENT}
-smtp_tls_mandatory_ciphers      = ${TLS_CLIENT_MANDATORY_CIPHERS}
-smtp_tls_mandatory_protocols    = ${TLS_CLIENT_MANDATORY_PROTOCOLS}
-smtp_tls_session_cache_database = lmdb:${CONFIG_PATH}/smtp_scache
+smtp_tls_security_level             = ${TLS_CLIENT_SECURITY_LEVEL}
+smtp_tls_loglevel                   = ${LOG_LEVEL_TLS_CLIENT}
+smtp_tls_mandatory_ciphers          = ${TLS_CLIENT_MANDATORY_CIPHERS}
+smtp_tls_mandatory_protocols        = ${TLS_CLIENT_MANDATORY_PROTOCOLS}
+smtp_tls_session_cache_database     = lmdb:${CONFIG_PATH}/smtp_scache
 
 ${srsd_settings}
 
@@ -1041,18 +1041,18 @@ unknown_virtual_alias_reject_code   = 550
 unknown_virtual_mailbox_reject_code = 550
 
 ## bounces
-confirm_delay_cleared           = ${CONFIRM_DELAY_CLEARED}
-enable_threaded_bounces         = ${ENABLE_THREADED_BOUNCES,,}
+confirm_delay_cleared               = ${CONFIRM_DELAY_CLEARED}
+enable_threaded_bounces             = ${ENABLE_THREADED_BOUNCES,,}
 
 # deferred mail intervals
-queue_run_delay                 = ${QUEUE_DELAY}
-minimal_backoff_time            = ${BACKOFF_TIME_MIN}
-delay_warning_time              = ${DELAY_WARNING_TIME}
-maximal_backoff_time            = ${BACKOFF_TIME_MAX}
-maximal_queue_lifetime          = ${LIFETIME_QUEUE_MAX}
-bounce_queue_lifetime           = ${LIFETIME_QUEUE_BOUNCE}
-qmgr_message_recipient_limit    = ${LIMIT_MESSAGE_RECIPIENTS}
-message_size_limit              = ${LIMIT_MESSAGE_SIZE}
+queue_run_delay                     = ${QUEUE_DELAY}
+minimal_backoff_time                = ${BACKOFF_TIME_MIN}
+delay_warning_time                  = ${DELAY_WARNING_TIME}
+maximal_backoff_time                = ${BACKOFF_TIME_MAX}
+maximal_queue_lifetime              = ${LIFETIME_QUEUE_MAX}
+bounce_queue_lifetime               = ${LIFETIME_QUEUE_BOUNCE}
+qmgr_message_recipient_limit        = ${LIMIT_MESSAGE_RECIPIENTS}
+message_size_limit                  = ${LIMIT_MESSAGE_SIZE}
 EOF
     fi
 }
