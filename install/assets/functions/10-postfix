@@ -288,6 +288,13 @@ configure_ldap() {
     if var_true "${ENABLE_LDAP}"; then
         if [ "${SETUP_TYPE,,}" = "auto" ] ; then
             print_notice "[configure_ldap} Autoconfiguring"
+            transform_file_var \
+                                    LDAP_BASE_DN \
+                                    LDAP_BIND_DN \
+                                    LDAP_BIND_PASS \
+                                    LDAP_HOST \
+                                    LDAP_SEARCH_DN
+
             sanity_var LDAP_HOST "LDAP Host"
             sanity_var LDAP_BASE_DN "LDAP Base DN"
 
@@ -682,6 +689,12 @@ EOF
 
         ### Relay Hosts
         if var_true "${ENABLE_RELAY_HOST}"; then
+            transform_file_var \
+                                    RELAY_HOST \
+                                    RELAY_USER \
+                                    RELAY_PASS \
+                                    RELAY_PORT
+
             sanity_var RELAY_HOST "Relay Host"
             if [ -z "${RELAY_USER}" ] || [ -z "${RELAY_PASS}" ] ; then
                 RELAY_ENABLE_AUTH="no"
