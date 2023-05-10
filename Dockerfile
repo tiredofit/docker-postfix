@@ -1,5 +1,5 @@
 ARG DISTRO="alpine"
-ARG DISTRO_VARIANT="3.17"
+ARG DISTRO_VARIANT="3.19"
 
 FROM docker.io/tiredofit/${DISTRO}:${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
@@ -8,7 +8,7 @@ ARG CYRUS_SASL_VERSION
 ARG POSTSRSD_VERSION
 
 ENV CYRUS_SASL_VERSION=${CYRUS_SASL_VERSION:-"2.1.28"} \
-    POSTSRSD_VERSION=${POSTSRSD_VERSION:-"1.11"} \
+    POSTSRSD_VERSION=${POSTSRSD_VERSION:-"1.12"} \
     CYRUS_SASL_REPO_URL=https://github.com/cyrusimap/cyrus-sasl \
     POSTSRSD_REPO_URL=https://github.com/roehling/postsrsd \
     CONTAINER_ENABLE_MESSAGING=FALSE \
