@@ -1,3 +1,9 @@
+## 1.1.3 2023-12-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Update to postfix 3.8.4 and add mitigations for CVE-2023-51764
+
+
 ## 1.1.2 2023-12-08 <dave at tiredofit dot ca>
 
    ### Added

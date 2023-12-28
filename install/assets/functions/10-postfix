@@ -929,6 +929,22 @@ EOF
             smtpd_helo_reject_unknown_hostname="reject_unknown_helo_hostname, "
         fi
 
+            #### Discard when EHLO contains chunking to cancel out smtp smuggling
+        if [ -n "${SMTPD_DISCARD_EHLO_KEYWORDS}" ] ; then
+            smtpd_discard_ehlo_keywords="$(cat <<EOF
+smtpd_discard_ehlo_keywords=${SMTP_DISCARD_EHLO_KEYWORDS}
+EOF
+                                        )"
+        fi
+
+            #### Forbid bare newlines (SMTP Smuggling CVE 2023-51764)
+        if var_true "${SMTPD_FORBID_BARE_NEWLINE}"; then
+            smtpd_forbid_bare_newline="$(cat <<EOF
+smtpd_forbid_bare_newline=yes
+EOF
+                                        )"
+        fi
+
             #### Reject when doesn't have a hostname
         if var_true "${SMTPD_REJECT_INVALID_HOSTNAME}" ; then
             smtpd_reject_invalid_hostname="reject_invalid_hostname, "
@@ -1017,7 +1033,8 @@ ${smtpd_helo_restrictions}
 ${smtpd_recipient_restrictions}
 smtpd_relay_restrictions            = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 ${smtpd_sender_restrictions}
-
+${smtpd_discard_ehlo_keyword}
+${smtpd_forbid_bare_newline}
 ${smtpd_sasl_settings}
 
 # TLS encryption - server
@@ -1269,6 +1286,7 @@ setup_container_mode() {
                 ENABLE_SMTPD_SENDER_RESTRICTIONS=FALSE
                 ENABLE_SMTPD_HELO_RESTRICTIONS=FALSE
                 ENABLE_SMTP_HEADER_CHECKS=FALSE
+                SMTPD_FORBID_BARE_NEWLINE=FALSE
                 ENABLE_THREADED_BOUNCES=FALSE
                 ENABLE_TRANSPORT_MAP=FALSE
                 ENABLE_VIRTUAL_MAPS=FALSE
